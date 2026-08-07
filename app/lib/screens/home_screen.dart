@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:enough_mail/enough_mail.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../distribution.dart';
 import '../models/account.dart';
@@ -75,13 +76,13 @@ class _HomeScreenState extends State<HomeScreen> {
     });
     try {
       final service = MailService(account);
-      final messages = await service.fetchFolder();
-      List<Mailbox> folders = [];
-      try {
-        folders = await service.listFolders();
-      } catch (_) {
-        // Folder list is enhancement, not blocker.
-      }
+      // Inbox and folder list ride the same connection concurrently.
+      final results = await Future.wait([
+        service.fetchFolder(),
+        service.listFolders().catchError((_) => <Mailbox>[]),
+      ]);
+      final messages = results[0] as List<MimeMessage>;
+      final folders = results[1] as List<Mailbox>;
       if (!mounted) return;
       setState(() {
         _service = service;
@@ -102,24 +103,33 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _openFolder(Mailbox box) async {
     final service = _service;
     if (service == null) return;
+    // Cache-first: paint whatever we already have instantly, then refresh.
+    final cached = service.cachedFolder(box);
     setState(() {
       _folder = box;
-      _loading = true;
       _selected.clear();
+      if (cached != null) {
+        _messages = cached;
+        _loading = false;
+      } else {
+        _loading = true;
+      }
     });
     try {
       final messages = await service.fetchFolder(mailbox: box);
-      if (!mounted) return;
+      if (!mounted || _folder != box) return;
       setState(() {
         _messages = messages;
         _loading = false;
         _error = null;
       });
     } catch (e) {
-      if (!mounted) return;
+      if (!mounted || _folder != box) return;
       setState(() {
         _loading = false;
-        _error = 'Could not open ${box.name}.\n$e';
+        if (cached == null) {
+          _error = 'Could not open ${box.name}.\n$e';
+        }
       });
     }
   }
@@ -375,7 +385,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _list() {
     final scheme = Theme.of(context).colorScheme;
     if (!_store.isLoaded || _loading) {
-      return const Center(child: CircularProgressIndicator());
+      return _skeleton();
     }
     if (_error != null) {
       return _empty(
@@ -416,24 +426,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               children: [
                 for (var i = 0; i < _messages.length; i++) ...[
-                  MessageRow(
-                    message: _messages[i],
-                    selectionMode: _selecting,
-                    selected: _selected.contains(_messages[i]),
-                    onTap: () {
-                      if (_selecting) {
-                        setState(() {
-                          _selected.contains(_messages[i])
-                              ? _selected.remove(_messages[i])
-                              : _selected.add(_messages[i]);
-                        });
-                      } else {
-                        _openMessage(_messages[i]);
-                      }
-                    },
-                    onLongPress: () =>
-                        setState(() => _selected.add(_messages[i])),
-                  ),
+                  _swipeable(_messages[i]),
                   if (i != _messages.length - 1)
                     Divider(
                         height: 1,
@@ -445,6 +438,96 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _swipeable(MimeMessage message) {
+    final scheme = Theme.of(context).colorScheme;
+    final row = MessageRow(
+      message: message,
+      selectionMode: _selecting,
+      selected: _selected.contains(message),
+      onTap: () {
+        if (_selecting) {
+          setState(() {
+            _selected.contains(message)
+                ? _selected.remove(message)
+                : _selected.add(message);
+          });
+        } else {
+          _openMessage(message);
+        }
+      },
+      onLongPress: () {
+        HapticFeedback.selectionClick();
+        setState(() => _selected.add(message));
+      },
+    );
+    if (_selecting) return row;
+    return Dismissible(
+      key: ValueKey(message.uid ?? message.hashCode),
+      background: Container(
+        color: scheme.primary,
+        alignment: Alignment.centerLeft,
+        padding: const EdgeInsets.only(left: 22),
+        child: Icon(Icons.archive_outlined, color: scheme.onPrimary),
+      ),
+      secondaryBackground: Container(
+        color: scheme.error,
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.only(right: 22),
+        child: Icon(Icons.delete_outline, color: scheme.onError),
+      ),
+      onDismissed: (direction) async {
+        final service = _service;
+        setState(() => _messages.remove(message));
+        if (service == null) return;
+        final archive = direction == DismissDirection.startToEnd;
+        try {
+          if (archive) {
+            await service.moveToArchive([message]);
+          } else {
+            await service.moveToTrash([message]);
+          }
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content:
+                    Text(archive ? 'Archived' : 'Moved to Trash')));
+          }
+        } catch (e) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('That failed: $e')));
+            await _refresh();
+          }
+        }
+      },
+      child: row,
+    );
+  }
+
+  /// Pulsing placeholder rows - faster-feeling than a spinner.
+  Widget _skeleton() {
+    final scheme = Theme.of(context).colorScheme;
+    return ListView(
+      physics: const NeverScrollableScrollPhysics(),
+      padding: const EdgeInsets.only(top: 6),
+      children: [
+        RanseCard(
+          child: Column(
+            children: [
+              for (var i = 0; i < 8; i++) ...[
+                _SkeletonRow(seed: i),
+                if (i != 7)
+                  Divider(
+                      height: 1,
+                      thickness: .8,
+                      color: scheme.outlineVariant),
+              ],
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -500,6 +583,59 @@ class _HomeScreenState extends State<HomeScreen> {
       actionLabel: 'Add account',
       onAction: () => Navigator.of(context).push(
         MaterialPageRoute(builder: (_) => const AccountSetupScreen()),
+      ),
+    );
+  }
+}
+
+class _SkeletonRow extends StatefulWidget {
+  const _SkeletonRow({required this.seed});
+
+  final int seed;
+
+  @override
+  State<_SkeletonRow> createState() => _SkeletonRowState();
+}
+
+class _SkeletonRowState extends State<_SkeletonRow>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _pulse = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 900),
+  )..repeat(reverse: true);
+
+  @override
+  void dispose() {
+    _pulse.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final widths = [.55, .7, .45, .62, .5, .68, .58, .48];
+    Widget bar(double widthFactor, double height) => FractionallySizedBox(
+          alignment: Alignment.centerLeft,
+          widthFactor: widthFactor,
+          child: Container(
+            height: height,
+            decoration: BoxDecoration(
+              color: scheme.outlineVariant,
+              borderRadius: BorderRadius.circular(4),
+            ),
+          ),
+        );
+    return FadeTransition(
+      opacity: Tween(begin: .45, end: 1.0).animate(_pulse),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 14),
+        child: Column(
+          children: [
+            bar(widths[widget.seed % widths.length], 11),
+            const SizedBox(height: 7),
+            bar(widths[(widget.seed + 3) % widths.length] + .2, 9),
+          ],
+        ),
       ),
     );
   }

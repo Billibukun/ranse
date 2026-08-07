@@ -16,6 +16,7 @@ class ComposeScreen extends StatefulWidget {
     required this.service,
     required this.account,
     this.prepared,
+    this.initialBody,
   });
 
   final MailService service;
@@ -23,6 +24,10 @@ class ComposeScreen extends StatefulWidget {
 
   /// Pre-filled builder from forward; null for a fresh message.
   final MessageBuilder? prepared;
+
+  /// Editor prefill (e.g. the forwarded-message block). Wins over any text
+  /// the builder carries.
+  final String? initialBody;
 
   @override
   State<ComposeScreen> createState() => _ComposeScreenState();
@@ -41,7 +46,8 @@ class _ComposeScreenState extends State<ComposeScreen> {
   void initState() {
     super.initState();
     final prepared = widget.prepared;
-    _composer = RichComposer(initialText: prepared?.text);
+    _composer =
+        RichComposer(initialText: widget.initialBody ?? prepared?.text);
     if (prepared != null) {
       prepared.text = null;
       _toController.text =

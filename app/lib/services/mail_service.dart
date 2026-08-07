@@ -13,6 +13,11 @@ class MailService {
   MailClient? _client;
   List<Mailbox>? _mailboxes;
 
+  /// Session caches - lists per folder and full messages by UID - so
+  /// revisiting a folder or reopening a message is instant.
+  final Map<String, List<MimeMessage>> folderCache = {};
+  final Map<int, MimeMessage> _contentCache = {};
+
   Future<MailClient> _ensureConnected() async {
     final existing = _client;
     if (existing != null && existing.isConnected) return existing;
@@ -61,23 +66,29 @@ class MailService {
   }
 
   /// Newest-first envelope fetch of any folder (defaults to the inbox).
+  /// Successful fetches refresh [folderCache] under the folder's path.
   Future<List<MimeMessage>> fetchFolder({
     Mailbox? mailbox,
     int count = 50,
   }) async {
     final client = await _ensureConnected();
+    Mailbox selected;
     if (mailbox == null) {
-      await client.selectInbox();
+      selected = await client.selectInbox();
     } else {
-      await client.selectMailbox(mailbox);
+      selected = await client.selectMailbox(mailbox);
     }
     final messages = await client.fetchMessages(
       count: count,
       fetchPreference: FetchPreference.envelope,
     );
     messages.sort(_newestFirst);
+    folderCache[selected.encodedPath] = messages;
     return messages;
   }
+
+  List<MimeMessage>? cachedFolder(Mailbox? mailbox) =>
+      folderCache[mailbox?.encodedPath ?? 'INBOX'];
 
   static int _newestFirst(MimeMessage a, MimeMessage b) {
     final da = a.decodeDate();
@@ -89,9 +100,21 @@ class MailService {
   }
 
   /// Downloads the full message (body + attachments) and marks it seen.
+  /// Cached by UID so reopening a message is instant.
   Future<MimeMessage> fetchContents(MimeMessage message) async {
+    final uid = message.uid;
+    final cached = uid == null ? null : _contentCache[uid];
+    if (cached != null) return cached;
     final client = await _ensureConnected();
-    return client.fetchMessageContents(message, markAsSeen: true);
+    final full =
+        await client.fetchMessageContents(message, markAsSeen: true);
+    if (uid != null) {
+      if (_contentCache.length > 30) {
+        _contentCache.remove(_contentCache.keys.first);
+      }
+      _contentCache[uid] = full;
+    }
+    return full;
   }
 
   /// Server-side search across the currently relevant folder.
@@ -142,6 +165,8 @@ class MailService {
     final client = _client;
     _client = null;
     _mailboxes = null;
+    folderCache.clear();
+    _contentCache.clear();
     if (client != null) {
       try {
         await client.disconnect();

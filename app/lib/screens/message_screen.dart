@@ -10,6 +10,7 @@ import 'package:path_provider/path_provider.dart';
 
 import '../models/account.dart';
 import '../services/mail_service.dart';
+import '../services/quoting.dart';
 import '../theme.dart';
 import '../widgets/rich_composer.dart';
 import 'compose_screen.dart';
@@ -36,6 +37,8 @@ class _MessageScreenState extends State<MessageScreen> {
   RichComposer? _reply;
   bool _replyAll = false;
   bool _sending = false;
+  bool _includeQuote = true;
+  bool _quoteExpanded = false;
 
   @override
   void initState() {
@@ -63,7 +66,11 @@ class _MessageScreenState extends State<MessageScreen> {
   void _startReply({required bool all}) {
     setState(() {
       _replyAll = all;
-      _reply ??= RichComposer();
+      if (_reply == null) {
+        _reply = RichComposer();
+        _includeQuote = true;
+        _quoteExpanded = false;
+      }
     });
   }
 
@@ -78,10 +85,13 @@ class _MessageScreenState extends State<MessageScreen> {
         MailAddress(widget.account.displayName, widget.account.email),
         replyAll: _replyAll,
       )..text = null;
-      builder.addMultipartAlternative(
-        plainText: reply.plainText,
-        htmlText: reply.html,
-      );
+      var plain = reply.plainText;
+      var html = reply.html;
+      if (_includeQuote) {
+        plain = '$plain\n\n${Quoting.replyQuotePlain(full)}';
+        html = '$html<br>${Quoting.replyQuoteHtml(full)}';
+      }
+      builder.addMultipartAlternative(plainText: plain, htmlText: html);
       await widget.service.send(builder.buildMimeMessage());
       if (!mounted) return;
       setState(() {
@@ -102,15 +112,20 @@ class _MessageScreenState extends State<MessageScreen> {
   void _forward() {
     final full = _full;
     if (full == null) return;
+    // quoteMessage: false - we place the forwarded block in the editor
+    // ourselves so it is always visible and editable, whatever the original
+    // format was. Attachments still ride along on the builder.
     final builder = MessageBuilder.prepareForwardMessage(
       full,
       from: MailAddress(widget.account.displayName, widget.account.email),
+      quoteMessage: false,
     );
     Navigator.of(context).push(MaterialPageRoute(
       builder: (_) => ComposeScreen(
         service: widget.service,
         account: widget.account,
         prepared: builder,
+        initialBody: '\n\n${Quoting.forwardPlain(full)}',
       ),
     ));
   }
@@ -459,6 +474,7 @@ class _MessageScreenState extends State<MessageScreen> {
                 ),
               ),
             ),
+            if (_includeQuote) _quotePill(),
             FormatBar(
               composer: reply,
               trailing: [
@@ -480,6 +496,94 @@ class _MessageScreenState extends State<MessageScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  /// Gmail's "..." - the quoted history rides along collapsed; tap to peek,
+  /// x to drop it from this reply.
+  Widget _quotePill() {
+    final scheme = Theme.of(context).colorScheme;
+    final ranse = context.ranse;
+    final full = _full;
+    if (full == null) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              InkWell(
+                borderRadius: BorderRadius.circular(99),
+                onTap: () =>
+                    setState(() => _quoteExpanded = !_quoteExpanded),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 12, vertical: 5),
+                  decoration: BoxDecoration(
+                    color: ranse.tagBg,
+                    borderRadius: BorderRadius.circular(99),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.more_horiz,
+                          size: 16, color: scheme.primary),
+                      const SizedBox(width: 6),
+                      Text(
+                        'Quoted text',
+                        style: TextStyle(
+                          fontSize: 11.5,
+                          fontWeight: FontWeight.w700,
+                          color: scheme.primary,
+                        ),
+                      ),
+                      Icon(
+                        _quoteExpanded
+                            ? Icons.expand_less
+                            : Icons.expand_more,
+                        size: 15,
+                        color: scheme.primary,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(width: 6),
+              InkWell(
+                borderRadius: BorderRadius.circular(99),
+                onTap: () => setState(() => _includeQuote = false),
+                child: Padding(
+                  padding: const EdgeInsets.all(4),
+                  child: Icon(Icons.close,
+                      size: 15, color: scheme.onSurfaceVariant),
+                ),
+              ),
+            ],
+          ),
+          if (_quoteExpanded)
+            Container(
+              margin: const EdgeInsets.only(top: 8),
+              padding: const EdgeInsets.only(left: 10),
+              decoration: BoxDecoration(
+                border: Border(
+                  left: BorderSide(color: scheme.outlineVariant, width: 2),
+                ),
+              ),
+              constraints: const BoxConstraints(maxHeight: 130),
+              child: SingleChildScrollView(
+                child: Text(
+                  '${Quoting.replyHeader(full)}\n${Quoting.plainBody(full)}',
+                  style: TextStyle(
+                    fontSize: 12,
+                    height: 1.5,
+                    color: scheme.onSurfaceVariant,
+                  ),
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }
