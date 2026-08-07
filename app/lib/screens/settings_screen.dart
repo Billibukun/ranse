@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import '../distribution.dart';
 import '../main.dart';
 import '../services/account_store.dart';
 import '../services/updater.dart';
@@ -190,18 +191,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
             const Divider(),
             const _SectionHeader('Updates'),
-            ListTile(
-              leading: _checking
-                  ? const SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Icon(Icons.system_update_alt),
-              title: const Text('Check for updates'),
-              subtitle: Text(_version.isEmpty ? '' : 'Version $_version'),
-              onTap: _checking ? null : _checkForUpdates,
-            ),
+            if (kSelfUpdateEnabled)
+              ListTile(
+                leading: _checking
+                    ? const SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.system_update_alt),
+                title: const Text('Check for updates'),
+                subtitle: Text(_version.isEmpty ? '' : 'Version $_version'),
+                onTap: _checking ? null : _checkForUpdates,
+              )
+            else
+              ListTile(
+                leading: const Icon(Icons.shop_outlined),
+                title: const Text('Updates arrive through Google Play'),
+                subtitle: Text(_version.isEmpty ? '' : 'Version $_version'),
+              ),
             const Divider(),
             const ListTile(
               leading: Icon(Icons.info_outline),

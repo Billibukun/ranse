@@ -34,6 +34,16 @@ android {
         versionName = flutter.versionName
     }
 
+    // github: sideload/GitHub-Releases build with the in-app self-updater.
+    // play: Google Play build — no REQUEST_INSTALL_PACKAGES, no self-update
+    // (Play policy forbids both). Same applicationId so the channels can
+    // update over each other when signed with the same key.
+    flavorDimensions += "distribution"
+    productFlavors {
+        create("github") { dimension = "distribution" }
+        create("play") { dimension = "distribution" }
+    }
+
     signingConfigs {
         create("release") {
             val storeFilePath = keystoreProperties.getProperty("storeFile")

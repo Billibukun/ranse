@@ -1,0 +1,5 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Sideload channel only: lets the in-app updater hand a downloaded APK
+         to the system installer. Must never appear in the Play build. -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
+</manifest>

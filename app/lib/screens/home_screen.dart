@@ -1,6 +1,7 @@
 import 'package:enough_mail/enough_mail.dart';
 import 'package:flutter/material.dart';
 
+import '../distribution.dart';
 import '../models/account.dart';
 import '../services/account_store.dart';
 import '../services/mail_service.dart';
@@ -96,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _checkForUpdate() async {
-    if (_updatePrompted) return;
+    if (!kSelfUpdateEnabled || _updatePrompted) return;
     try {
       final update = await Updater.check();
       if (update == null || !mounted) return;
