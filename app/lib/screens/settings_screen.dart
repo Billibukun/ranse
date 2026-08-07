@@ -5,6 +5,7 @@ import '../distribution.dart';
 import '../main.dart';
 import '../services/account_store.dart';
 import '../services/updater.dart';
+import '../theme.dart';
 import 'account_setup_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -134,111 +135,168 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     final store = AccountStore.instance;
     final themeController = RanseApp.themeOf(context);
+    final scheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Settings')),
-      body: ListenableBuilder(
-        listenable: Listenable.merge([store, themeController]),
-        builder: (context, _) => ListView(
-          children: [
-            const _SectionHeader('Appearance'),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: SegmentedButton<ThemeMode>(
-                segments: const [
-                  ButtonSegment(
-                    value: ThemeMode.light,
-                    label: Text('Light'),
-                    icon: Icon(Icons.light_mode_outlined),
-                  ),
-                  ButtonSegment(
-                    value: ThemeMode.dark,
-                    label: Text('Dark'),
-                    icon: Icon(Icons.dark_mode_outlined),
-                  ),
-                  ButtonSegment(
-                    value: ThemeMode.system,
-                    label: Text('Auto'),
-                    icon: Icon(Icons.phone_android_outlined),
-                  ),
-                ],
-                selected: {themeController.mode},
-                onSelectionChanged: (selection) =>
-                    themeController.setMode(selection.first),
-              ),
-            ),
-            const Divider(),
-            const _SectionHeader('Accounts'),
-            for (final account in store.accounts)
-              ListTile(
-                leading: const Icon(Icons.email_outlined),
-                title: Text(account.email),
-                subtitle: Text(
-                    '${account.imapHost} · ${account.smtpHost}:${account.smtpPort}'),
-                trailing: IconButton(
-                  icon: const Icon(Icons.delete_outline),
-                  onPressed: () =>
-                      _confirmRemove(account.id, account.email),
+      body: SafeArea(
+        child: ListenableBuilder(
+          listenable: Listenable.merge([store, themeController]),
+          builder: (context, _) => ListView(
+            padding: const EdgeInsets.only(bottom: 24),
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(6, 4, 6, 0),
+                child: Row(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.arrow_back, size: 22),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                    Text('Settings', style: context.disp(size: 21)),
+                  ],
                 ),
               ),
-            ListTile(
-              leading: const Icon(Icons.add),
-              title: const Text('Add account'),
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                    builder: (_) => const AccountSetupScreen()),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+                child: SegmentedButton<ThemeMode>(
+                  segments: const [
+                    ButtonSegment(
+                      value: ThemeMode.light,
+                      label: Text('Light'),
+                      icon: Icon(Icons.light_mode_outlined, size: 17),
+                    ),
+                    ButtonSegment(
+                      value: ThemeMode.dark,
+                      label: Text('Dark'),
+                      icon: Icon(Icons.dark_mode_outlined, size: 17),
+                    ),
+                    ButtonSegment(
+                      value: ThemeMode.system,
+                      label: Text('Auto'),
+                      icon: Icon(Icons.phone_android_outlined, size: 17),
+                    ),
+                  ],
+                  selected: {themeController.mode},
+                  onSelectionChanged: (selection) =>
+                      themeController.setMode(selection.first),
+                ),
               ),
-            ),
-            const Divider(),
-            const _SectionHeader('Updates'),
-            if (kSelfUpdateEnabled)
-              ListTile(
-                leading: _checking
-                    ? const SizedBox(
-                        width: 24,
-                        height: 24,
-                        child: CircularProgressIndicator(strokeWidth: 2),
+              _sectionLabel(context, 'ACCOUNTS'),
+              RanseCard(
+                child: Column(
+                  children: [
+                    for (final account in store.accounts)
+                      ListTile(
+                        leading: Icon(Icons.email_outlined,
+                            size: 20, color: scheme.primary),
+                        title: Text(
+                          account.email,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                              fontSize: 13.5,
+                              fontWeight: FontWeight.w600),
+                        ),
+                        subtitle: Text(
+                          account.imapHost,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(fontSize: 11.5),
+                        ),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.delete_outline, size: 20),
+                          onPressed: () =>
+                              _confirmRemove(account.id, account.email),
+                        ),
+                      ),
+                    ListTile(
+                      leading: Icon(Icons.add,
+                          size: 20, color: scheme.onSurfaceVariant),
+                      title: const Text('Add account',
+                          style: TextStyle(
+                              fontSize: 13.5,
+                              fontWeight: FontWeight.w700)),
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (_) => const AccountSetupScreen()),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              _sectionLabel(context, 'UPDATES'),
+              RanseCard(
+                child: kSelfUpdateEnabled
+                    ? ListTile(
+                        leading: _checking
+                            ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                    strokeWidth: 2),
+                              )
+                            : Icon(Icons.system_update_alt,
+                                size: 20, color: scheme.primary),
+                        title: const Text('Check for updates',
+                            style: TextStyle(
+                                fontSize: 13.5,
+                                fontWeight: FontWeight.w700)),
+                        subtitle: Text(
+                            _version.isEmpty ? '' : 'Version $_version',
+                            style: const TextStyle(fontSize: 11.5)),
+                        onTap: _checking ? null : _checkForUpdates,
                       )
-                    : const Icon(Icons.system_update_alt),
-                title: const Text('Check for updates'),
-                subtitle: Text(_version.isEmpty ? '' : 'Version $_version'),
-                onTap: _checking ? null : _checkForUpdates,
-              )
-            else
-              ListTile(
-                leading: const Icon(Icons.shop_outlined),
-                title: const Text('Updates arrive through Google Play'),
-                subtitle: Text(_version.isEmpty ? '' : 'Version $_version'),
+                    : ListTile(
+                        leading: Icon(Icons.shop_outlined,
+                            size: 20, color: scheme.primary),
+                        title: const Text(
+                            'Updates arrive through Google Play',
+                            style: TextStyle(
+                                fontSize: 13.5,
+                                fontWeight: FontWeight.w700)),
+                        subtitle: Text(
+                            _version.isEmpty ? '' : 'Version $_version',
+                            style: const TextStyle(fontSize: 11.5)),
+                      ),
               ),
-            const Divider(),
-            const ListTile(
-              leading: Icon(Icons.info_outline),
-              title: Text('Ranse'),
-              subtitle: Text(
-                  'Your mail, delivered.\nA Data Druid Tech Services product.'),
-            ),
-          ],
+              const SizedBox(height: 26),
+              Center(
+                child: Column(
+                  children: [
+                    Text('Ranse',
+                        style: context.disp(
+                            size: 22,
+                            italic: true,
+                            color: context.ranse.brass)),
+                    const SizedBox(height: 3),
+                    Text(
+                      'Your mail, delivered.\nA Data Druid Tech Services product.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: 11.5,
+                          height: 1.6,
+                          color: scheme.onSurfaceVariant),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
-}
 
-class _SectionHeader extends StatelessWidget {
-  const _SectionHeader(this.title);
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _sectionLabel(BuildContext context, String text) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
+      padding: const EdgeInsets.fromLTRB(22, 14, 22, 6),
       child: Text(
-        title,
+        text,
         style: TextStyle(
-          color: Theme.of(context).colorScheme.primary,
-          fontWeight: FontWeight.w600,
-          fontSize: 13,
+          fontSize: 10.5,
+          fontWeight: FontWeight.w800,
+          letterSpacing: 1.3,
+          color: context.ranse.brass,
         ),
       ),
     );

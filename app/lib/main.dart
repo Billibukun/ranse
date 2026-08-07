@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_quill/flutter_quill.dart'
+    show FlutterQuillLocalizations;
 
 import 'screens/home_screen.dart';
 import 'services/account_store.dart';
@@ -36,6 +39,13 @@ class RanseApp extends StatelessWidget {
         theme: ranseLightTheme(),
         darkTheme: ranseDarkTheme(),
         themeMode: themeController.mode,
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+          FlutterQuillLocalizations.delegate,
+        ],
+        supportedLocales: const [Locale('en')],
         home: const HomeScreen(),
       ),
     );

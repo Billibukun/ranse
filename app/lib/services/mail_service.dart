@@ -1,15 +1,17 @@
+import 'package:collection/collection.dart';
 import 'package:enough_mail/enough_mail.dart';
 
 import '../models/account.dart';
 
 /// Thin wrapper around enough_mail's MailClient for one account.
-/// The device talks straight to the customer's cPanel server — nothing is
+/// The device talks straight to the customer's cPanel server - nothing is
 /// proxied.
 class MailService {
   MailService(this.account);
 
   final RanseAccount account;
   MailClient? _client;
+  List<Mailbox>? _mailboxes;
 
   Future<MailClient> _ensureConnected() async {
     final existing = _client;
@@ -24,10 +26,51 @@ class MailService {
     return client;
   }
 
-  /// Newest-first envelope fetch of the inbox.
-  Future<List<MimeMessage>> fetchInbox({int count = 40}) async {
+  /// Standard folders in display order, resolved from the server's own list
+  /// by their SPECIAL-USE flags (with name fallbacks for older servers).
+  Future<List<Mailbox>> listFolders() async {
     final client = await _ensureConnected();
-    await client.selectInbox();
+    final all = _mailboxes ??= await client.listMailboxes();
+
+    Mailbox? byFlag(MailboxFlag flag, List<String> names) {
+      for (final box in all) {
+        if (box.flags.contains(flag)) return box;
+      }
+      for (final box in all) {
+        if (names.contains(box.name.toLowerCase())) return box;
+      }
+      return null;
+    }
+
+    final ordered = <Mailbox>[];
+    void add(Mailbox? box) {
+      if (box != null && !ordered.contains(box)) ordered.add(box);
+    }
+
+    add(byFlag(MailboxFlag.inbox, ['inbox']));
+    add(byFlag(MailboxFlag.sent, ['sent', 'sent items', 'sent messages']));
+    add(byFlag(MailboxFlag.drafts, ['drafts', 'draft']));
+    add(byFlag(MailboxFlag.junk, ['junk', 'spam', 'junk e-mail']));
+    add(byFlag(MailboxFlag.trash, ['trash', 'deleted', 'deleted items']));
+    add(byFlag(MailboxFlag.archive, ['archive', 'archives']));
+    // Any remaining real folders the user created on the server.
+    for (final box in all) {
+      if (!ordered.contains(box) && !box.isNotSelectable) ordered.add(box);
+    }
+    return ordered;
+  }
+
+  /// Newest-first envelope fetch of any folder (defaults to the inbox).
+  Future<List<MimeMessage>> fetchFolder({
+    Mailbox? mailbox,
+    int count = 50,
+  }) async {
+    final client = await _ensureConnected();
+    if (mailbox == null) {
+      await client.selectInbox();
+    } else {
+      await client.selectMailbox(mailbox);
+    }
     final messages = await client.fetchMessages(
       count: count,
       fetchPreference: FetchPreference.envelope,
@@ -51,20 +94,59 @@ class MailService {
     return client.fetchMessageContents(message, markAsSeen: true);
   }
 
+  /// Server-side search across the currently relevant folder.
+  Future<List<MimeMessage>> search(String query) async {
+    final client = await _ensureConnected();
+    final result = await client.searchMessages(
+      MailSearch(query, SearchQueryType.allTextHeaders, pageSize: 40),
+    );
+    final messages = result.messages.toList()..sort(_newestFirst);
+    return messages;
+  }
+
   /// Sends and appends to the account's Sent folder.
   Future<void> send(MimeMessage message) async {
     final client = await _ensureConnected();
     await client.sendMessage(message, appendToSent: true);
   }
 
+  Future<void> moveToTrash(List<MimeMessage> messages) async {
+    final client = await _ensureConnected();
+    for (final m in messages) {
+      await client.deleteMessage(m);
+    }
+  }
+
+  Future<void> moveToJunk(List<MimeMessage> messages) async {
+    final client = await _ensureConnected();
+    for (final m in messages) {
+      await client.junkMessage(m);
+    }
+  }
+
+  Future<void> moveToArchive(List<MimeMessage> messages) async {
+    final client = await _ensureConnected();
+    final archive = (await listFolders())
+        .where((b) => b.flags.contains(MailboxFlag.archive))
+        .firstOrNull;
+    for (final m in messages) {
+      if (archive != null) {
+        await client.moveMessage(m, archive);
+      } else {
+        await client.deleteMessage(m);
+      }
+    }
+  }
+
   Future<void> disconnect() async {
     final client = _client;
     _client = null;
+    _mailboxes = null;
     if (client != null) {
       try {
         await client.disconnect();
       } catch (_) {
-        // already gone — fine
+        // already gone - fine
       }
     }
   }

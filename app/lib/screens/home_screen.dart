@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:enough_mail/enough_mail.dart';
 import 'package:flutter/material.dart';
 
@@ -6,10 +7,14 @@ import '../models/account.dart';
 import '../services/account_store.dart';
 import '../services/mail_service.dart';
 import '../services/updater.dart';
-import '../widgets/message_tile.dart';
+import '../theme.dart';
+import '../widgets/glass_bar.dart';
+import '../widgets/message_row.dart';
+import '../widgets/ranse_drawer.dart';
 import 'account_setup_screen.dart';
 import 'compose_screen.dart';
 import 'message_screen.dart';
+import 'search_screen.dart';
 import 'settings_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -20,13 +25,18 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   MailService? _service;
+  List<Mailbox> _folders = [];
+  Mailbox? _folder;
   List<MimeMessage> _messages = [];
+  final Set<MimeMessage> _selected = {};
   bool _loading = false;
   String? _error;
   bool _updatePrompted = false;
 
   AccountStore get _store => AccountStore.instance;
+  bool get _selecting => _selected.isNotEmpty;
 
   @override
   void initState() {
@@ -49,6 +59,9 @@ class _HomeScreenState extends State<HomeScreen> {
     final account = _store.current;
     await _service?.disconnect();
     _service = null;
+    _folder = null;
+    _folders = [];
+    _selected.clear();
     if (account == null) {
       setState(() {
         _messages = [];
@@ -62,18 +75,51 @@ class _HomeScreenState extends State<HomeScreen> {
     });
     try {
       final service = MailService(account);
-      final messages = await service.fetchInbox();
+      final messages = await service.fetchFolder();
+      List<Mailbox> folders = [];
+      try {
+        folders = await service.listFolders();
+      } catch (_) {
+        // Folder list is enhancement, not blocker.
+      }
       if (!mounted) return;
       setState(() {
         _service = service;
         _messages = messages;
+        _folders = folders;
+        _folder = folders.where((f) => f.isInbox).firstOrNull;
         _loading = false;
       });
     } catch (e) {
       if (!mounted) return;
       setState(() {
         _loading = false;
-        _error = 'Could not load the inbox.\n$e';
+        _error = 'Could not reach the mailbox.\n$e';
+      });
+    }
+  }
+
+  Future<void> _openFolder(Mailbox box) async {
+    final service = _service;
+    if (service == null) return;
+    setState(() {
+      _folder = box;
+      _loading = true;
+      _selected.clear();
+    });
+    try {
+      final messages = await service.fetchFolder(mailbox: box);
+      if (!mounted) return;
+      setState(() {
+        _messages = messages;
+        _loading = false;
+        _error = null;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _loading = false;
+        _error = 'Could not open ${box.name}.\n$e';
       });
     }
   }
@@ -85,7 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
       return;
     }
     try {
-      final messages = await service.fetchInbox();
+      final messages = await service.fetchFolder(mailbox: _folder);
       if (!mounted) return;
       setState(() {
         _messages = messages;
@@ -94,6 +140,23 @@ class _HomeScreenState extends State<HomeScreen> {
     } catch (_) {
       await _connectAndLoad();
     }
+  }
+
+  void _quickFolder(QuickFolder which) {
+    final target = switch (which) {
+      QuickFolder.inbox => _folders.where((f) => f.isInbox).firstOrNull,
+      QuickFolder.sent => _folders.where((f) => f.isSent).firstOrNull,
+      QuickFolder.drafts => _folders.where((f) => f.isDrafts).firstOrNull,
+    };
+    if (target != null) _openFolder(target);
+  }
+
+  QuickFolder? get _activeQuick {
+    final f = _folder;
+    if (f == null || f.isInbox) return QuickFolder.inbox;
+    if (f.isSent) return QuickFolder.sent;
+    if (f.isDrafts) return QuickFolder.drafts;
+    return null;
   }
 
   Future<void> _checkForUpdate() async {
@@ -115,6 +178,25 @@ class _HomeScreenState extends State<HomeScreen> {
     } catch (_) {
       // Update check is best-effort; never bother the user about it.
     }
+  }
+
+  Future<void> _bulk(
+      Future<void> Function(List<MimeMessage>) action, String done) async {
+    final service = _service;
+    if (service == null) return;
+    final targets = _selected.toList();
+    setState(() => _selected.clear());
+    try {
+      await action(targets);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(done)));
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('That failed: $e')));
+    }
+    await _refresh();
   }
 
   void _openMessage(MimeMessage message) {
@@ -139,213 +221,285 @@ class _HomeScreenState extends State<HomeScreen> {
     ));
   }
 
+  String _greeting() {
+    final hour = DateTime.now().hour;
+    if (hour < 12) return 'Good morning';
+    if (hour < 17) return 'Good afternoon';
+    return 'Good evening';
+  }
+
   @override
   Widget build(BuildContext context) {
     final account = _store.current;
     return Scaffold(
-      appBar: AppBar(
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('Ranse'),
-            if (account != null)
-              Text(
-                account.email,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
+      key: _scaffoldKey,
+      drawer: account == null
+          ? null
+          : RanseDrawer(
+              folders: _folders,
+              currentFolder: _folder,
+              onFolderSelected: _openFolder,
+            ),
+      body: SafeArea(
+        child: account == null
+            ? _welcome()
+            : Stack(
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _selecting ? _selectionHeader() : _header(account),
+                      Expanded(child: _list()),
+                    ],
+                  ),
+                  GlassBar(
+                    active: _activeQuick,
+                    onFolder: _quickFolder,
+                    onCompose: _compose,
+                  ),
+                ],
               ),
-          ],
-        ),
-        actions: [
+      ),
+    );
+  }
+
+  Widget _header(RanseAccount account) {
+    final scheme = Theme.of(context).colorScheme;
+    final ranse = context.ranse;
+    final unread = _messages.where((m) => !m.isSeen).length;
+    final folderName = _folder?.isInbox ?? true ? 'Inbox' : _folder!.name;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 14, 14, 6),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '${_greeting()} · ${account.email}',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                      fontSize: 12, color: scheme.onSurfaceVariant),
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.baseline,
+                  textBaseline: TextBaseline.alphabetic,
+                  children: [
+                    Text(folderName, style: context.disp(size: 22)),
+                    const SizedBox(width: 8),
+                    if (unread > 0)
+                      Text(
+                        '$unread new',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                          color: ranse.brass,
+                        ),
+                      ),
+                  ],
+                ),
+              ],
+            ),
+          ),
           IconButton(
-            icon: const Icon(Icons.settings_outlined),
+            icon: const Icon(Icons.search, size: 23),
+            onPressed: () {
+              final service = _service;
+              final account = _store.current;
+              if (service == null || account == null) return;
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (_) =>
+                    SearchScreen(service: service, account: account),
+              ));
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.menu, size: 23),
+            onPressed: () => _scaffoldKey.currentState?.openDrawer(),
+          ),
+          IconButton(
+            icon: const Icon(Icons.settings_outlined, size: 22),
             onPressed: () => Navigator.of(context).push(
               MaterialPageRoute(builder: (_) => const SettingsScreen()),
             ),
           ),
         ],
       ),
-      drawer: _AccountDrawer(store: _store),
-      floatingActionButton: account == null
-          ? null
-          : FloatingActionButton.extended(
-              onPressed: _compose,
-              icon: const Icon(Icons.edit_outlined),
-              label: const Text('Compose'),
-            ),
-      body: _buildBody(account),
     );
   }
 
-  Widget _buildBody(RanseAccount? account) {
+  Widget _selectionHeader() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(14, 12, 14, 8),
+      child: Glass(
+        radius: 16,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                '${_selected.length} selected',
+                style:
+                    const TextStyle(fontSize: 13, fontWeight: FontWeight.w800),
+              ),
+            ),
+            IconButton(
+              tooltip: 'Archive',
+              icon: const Icon(Icons.archive_outlined, size: 21),
+              onPressed: () =>
+                  _bulk(_service!.moveToArchive, 'Archived'),
+            ),
+            IconButton(
+              tooltip: 'Junk',
+              icon: const Icon(Icons.block_outlined, size: 21),
+              onPressed: () => _bulk(_service!.moveToJunk, 'Marked as junk'),
+            ),
+            IconButton(
+              tooltip: 'Delete',
+              icon: const Icon(Icons.delete_outline, size: 21),
+              onPressed: () => _bulk(_service!.moveToTrash, 'Moved to Trash'),
+            ),
+            IconButton(
+              tooltip: 'Cancel',
+              icon: const Icon(Icons.close, size: 21),
+              onPressed: () => setState(() => _selected.clear()),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _list() {
+    final scheme = Theme.of(context).colorScheme;
     if (!_store.isLoaded || _loading) {
       return const Center(child: CircularProgressIndicator());
     }
-    if (account == null) {
-      return _EmptyState(
-        icon: Icons.mark_email_unread_outlined,
-        title: 'Welcome to Ranse',
-        message: 'Add your email account to get started.',
-        actionLabel: 'Add account',
-        onAction: () => Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => const AccountSetupScreen()),
-        ),
-      );
-    }
     if (_error != null) {
-      return _EmptyState(
-        icon: Icons.cloud_off_outlined,
+      return _empty(
+        art: 'Hm.',
         title: 'Connection problem',
-        message: _error!,
+        text: _error!,
         actionLabel: 'Retry',
         onAction: _connectAndLoad,
       );
     }
     if (_messages.isEmpty) {
+      final inbox = _folder?.isInbox ?? true;
       return RefreshIndicator(
         onRefresh: _refresh,
-        child: ListView(
-          children: const [
-            SizedBox(height: 160),
-            Center(child: Text('No messages in the inbox.')),
-          ],
+        child: LayoutBuilder(
+          builder: (context, constraints) => SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: SizedBox(
+              height: constraints.maxHeight,
+              child: _empty(
+                art: inbox ? 'All clear.' : 'Empty.',
+                title: inbox ? 'Every letter answered' : 'Nothing in here',
+                text: inbox
+                    ? 'Nothing waits for you. New mail will announce itself.'
+                    : 'This folder has no messages.',
+              ),
+            ),
+          ),
         ),
       );
     }
     return RefreshIndicator(
       onRefresh: _refresh,
-      child: ListView.separated(
-        itemCount: _messages.length,
-        separatorBuilder: (_, _) => const Divider(height: 1, indent: 72),
-        itemBuilder: (context, index) {
-          final message = _messages[index];
-          return MessageTile(
-            message: message,
-            onTap: () => _openMessage(message),
-          );
-        },
-      ),
-    );
-  }
-}
-
-class _AccountDrawer extends StatelessWidget {
-  const _AccountDrawer({required this.store});
-
-  final AccountStore store;
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    return Drawer(
-      child: SafeArea(
-        child: ListenableBuilder(
-          listenable: store,
-          builder: (context, _) => Column(
-            children: [
-              ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: scheme.primary,
-                  foregroundColor: scheme.onPrimary,
-                  child: const Icon(Icons.send_outlined),
-                ),
-                title: const Text(
-                  'Ranse',
-                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 20),
-                ),
-                subtitle: const Text('Your mail, delivered'),
-              ),
-              const Divider(),
-              Expanded(
-                child: ListView(
-                  children: [
-                    for (final account in store.accounts)
-                      ListTile(
-                        leading: Icon(
-                          account.id == store.current?.id
-                              ? Icons.radio_button_checked
-                              : Icons.radio_button_off,
-                          color: scheme.primary,
-                        ),
-                        title: Text(
-                          account.displayName.isEmpty
-                              ? account.email
-                              : account.displayName,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        subtitle: Text(
-                          account.email,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        onTap: () {
-                          store.setCurrent(account.id);
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                  ],
-                ),
-              ),
-              const Divider(),
-              ListTile(
-                leading: const Icon(Icons.add),
-                title: const Text('Add account'),
-                onTap: () {
-                  Navigator.of(context).pop();
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                        builder: (_) => const AccountSetupScreen()),
-                  );
-                },
-              ),
-            ],
+      child: ListView(
+        padding: const EdgeInsets.only(bottom: 110, top: 6),
+        children: [
+          RanseCard(
+            child: Column(
+              children: [
+                for (var i = 0; i < _messages.length; i++) ...[
+                  MessageRow(
+                    message: _messages[i],
+                    selectionMode: _selecting,
+                    selected: _selected.contains(_messages[i]),
+                    onTap: () {
+                      if (_selecting) {
+                        setState(() {
+                          _selected.contains(_messages[i])
+                              ? _selected.remove(_messages[i])
+                              : _selected.add(_messages[i]);
+                        });
+                      } else {
+                        _openMessage(_messages[i]);
+                      }
+                    },
+                    onLongPress: () =>
+                        setState(() => _selected.add(_messages[i])),
+                  ),
+                  if (i != _messages.length - 1)
+                    Divider(
+                        height: 1,
+                        thickness: .8,
+                        color: scheme.outlineVariant),
+                ],
+              ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
-}
 
-class _EmptyState extends StatelessWidget {
-  const _EmptyState({
-    required this.icon,
-    required this.title,
-    required this.message,
-    required this.actionLabel,
-    required this.onAction,
-  });
-
-  final IconData icon;
-  final String title;
-  final String message;
-  final String actionLabel;
-  final VoidCallback onAction;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _empty({
+    required String art,
+    required String title,
+    required String text,
+    String? actionLabel,
+    VoidCallback? onAction,
+  }) {
     final scheme = Theme.of(context).colorScheme;
+    final ranse = context.ranse;
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(32),
+        padding: const EdgeInsets.symmetric(horizontal: 44),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 64, color: scheme.primary),
-            const SizedBox(height: 16),
-            Text(title, style: Theme.of(context).textTheme.titleLarge),
+            Text(art,
+                style: context.disp(
+                    size: 42, italic: true, color: ranse.brass)),
+            const SizedBox(height: 8),
+            Text(title,
+                textAlign: TextAlign.center, style: context.disp(size: 20)),
             const SizedBox(height: 8),
             Text(
-              message,
+              text,
               textAlign: TextAlign.center,
-              style: TextStyle(color: scheme.onSurfaceVariant),
+              style: TextStyle(
+                  fontSize: 12.5,
+                  height: 1.6,
+                  color: scheme.onSurfaceVariant),
             ),
-            const SizedBox(height: 24),
-            FilledButton(onPressed: onAction, child: Text(actionLabel)),
+            if (actionLabel != null) ...[
+              const SizedBox(height: 20),
+              FilledButton(onPressed: onAction, child: Text(actionLabel)),
+            ],
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _welcome() {
+    if (!_store.isLoaded) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    return _empty(
+      art: 'Ranse',
+      title: 'Welcome',
+      text: 'Add your email account to get started. Just your email address '
+          'and password - Ranse finds the rest.',
+      actionLabel: 'Add account',
+      onAction: () => Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const AccountSetupScreen()),
       ),
     );
   }
