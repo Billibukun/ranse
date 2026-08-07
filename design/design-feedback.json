@@ -1,0 +1,37 @@
+{
+  "savedAt": "2026-08-07T10:45:24.580Z",
+  "brief": {
+    "users": "My hosting clients but it would become a good an simple mailing client for multiple organisatoins taht use cpanel email as their email host and other system ",
+    "feel": [
+      "professional",
+      "premium"
+    ],
+    "apps": [
+      "outlook",
+      "spark",
+      "telegram"
+    ],
+    "density": "compact",
+    "avatars": "none",
+    "replystyle": "inline",
+    "accent": "open",
+    "must_include": "glasmorphism, centered bottom glass bar for navigation of inbox, sent and draft and then the compose  button",
+    "must_avoid": "No gradients",
+    "references": "",
+    "overall": "mix",
+    "final_notes": "I love rounded corners and also i love to see nice looking designs premium okay and all functionalities are important for me "
+  },
+  "selections": {
+    "signin": "A",
+    "inbox": "C",
+    "drawer": "D",
+    "read": "D",
+    "reply": "D",
+    "compose": "D",
+    "search": "C",
+    "settings": "A",
+    "actions": "D",
+    "empty": "D"
+  },
+  "notes": {}
+}

@@ -1,0 +1,37 @@
+{
+  "project": "Ranse Android email client redesign",
+  "folder": "C:/Users/USER/OneDrive/Desktop/apps/webmail/design",
+  "artifact": "web-ui",
+  "audience": "Hosting clients' staff and any organisation on cPanel email - non-technical business users",
+  "occasion": "Full app redesign before feature build-out (folders, switcher, rich text)",
+  "relationship": "vendor-to-client product",
+  "desired_action": "customers adopt Ranse as their daily mail app and pay for it via hosting plans",
+  "formality": "corporate",
+  "register": "executive",
+  "brand": {
+    "preset": "ranse",
+    "organisation": "Data Druid Tech Services",
+    "colors": ["#175244", "#A8874C", "#F7F4EE", "#1C1A16"],
+    "fonts": "Fraunces (brand moments) / Archivo (UI workhorse)",
+    "logos": [],
+    "partners": []
+  },
+  "references": ["Outlook", "Spark", "Telegram"],
+  "last_shipped": "Ranse v0.1.0 Material defaults - deliberately different",
+  "size": "360x760 app screens",
+  "count": 10,
+  "must_include": [
+    "glassmorphism surfaces",
+    "centered glass bottom bar: Inbox / Sent / Drafts + Compose",
+    "compact density",
+    "no avatars",
+    "inline (in-place) reply",
+    "rounded corners",
+    "rich text formatting in compose",
+    "full folder set: Inbox Sent Drafts Junk Trash",
+    "fast account switcher"
+  ],
+  "must_avoid": ["gradients", "free/freemium language"],
+  "deliverables": ["design/index.html synthesis mockups", "Flutter implementation"],
+  "notes": "Per-screen picks round 1: signin A, inbox C, drawer D, read D, reply D, compose D, search C, settings A, actions D, empty D. Overall: mix. Synthesis = D structure + C roundness + A serif moments + glass. Feel: professional, premium. Rates Outlook/Spark/Telegram."
+}

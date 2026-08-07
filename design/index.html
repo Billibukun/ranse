@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ranse - Design Review</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700;800&family=Fraunces:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Space+Grotesk:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="base.css">
+<link rel="stylesheet" href="directions.css">
+</head>
+<body>
+
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></symbol>
+  <symbol id="i-pen" viewBox="0 0 24 24"><path d="M4 20l4-1L19 8l-3-3L5 16l-1 4z"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></symbol>
+  <symbol id="i-inbox" viewBox="0 0 24 24"><path d="M4 5h16v14H4z"/><path d="M4 13h5l2 3h2l2-3h5"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="M3 11l18-7-7 18-2.5-7L3 11z"/></symbol>
+  <symbol id="i-draft" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5"/></symbol>
+  <symbol id="i-junk" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M6 6l12 12"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3l2.7 5.9 6.3.6-4.8 4.2 1.4 6.2L12 16.9 6.4 20l1.4-6.2L3 9.5l6.3-.6L12 3z"/></symbol>
+  <symbol id="i-reply" viewBox="0 0 24 24"><path d="M9 14L4 9l5-5"/><path d="M4 9h9a7 7 0 017 7v3"/></symbol>
+  <symbol id="i-replyall" viewBox="0 0 24 24"><path d="M11 14L6 9l5-5M7 12L4 9l3-3"/><path d="M6 9h8a7 7 0 017 7v3"/></symbol>
+  <symbol id="i-forward" viewBox="0 0 24 24"><path d="M15 14l5-5-5-5"/><path d="M20 9h-9a7 7 0 00-7 7v3"/></symbol>
+  <symbol id="i-archive" viewBox="0 0 24 24"><path d="M3 4h18v4H3zM5 8v12h14V8M10 12h4"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></symbol>
+  <symbol id="i-attach" viewBox="0 0 24 24"><path d="M8 12l6-6a3.5 3.5 0 015 5l-8 8a5 5 0 01-7-7l7-7"/></symbol>
+  <symbol id="i-dots" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 6h6l2 2h10v11H3z"/></symbol>
+  <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 7h8M16 7h4M4 17h4M12 17h8"/><circle cx="14" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 9a6 6 0 0112 0c0 6 2 7 2 7H4s2-1 2-7"/><path d="M10 20a2 2 0 004 0"/></symbol>
+  <symbol id="i-swatch" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 000 18z" fill="currentColor" stroke="none"/></symbol>
+</svg>
+
+<div class="wrap">
+
+<header class="hero">
+  <h1>Ranse <span>/</span> design review</h1>
+  <p>Four complete visual directions, ten screens each. Answer the brief questions, then for every
+     screen pick the direction that feels right - you can mix directions across screens. Everything
+     autosaves; when you finish, hit Save and tell Claude "done".</p>
+  <div class="legend">
+    <div class="chip"><span class="dot" style="background:#1D5C45"></span><b>A - Ivory Post</b><i>correspondence, serif warmth, paper and ink</i></div>
+    <div class="chip"><span class="dot" style="background:#C8F55B"></span><b>B - Signal</b><i>tech-forward, deep green and lime, bold</i></div>
+    <div class="chip"><span class="dot" style="background:#C4552D"></span><b>C - Sunbird</b><i>warm and friendly, terracotta and indigo, rounded</i></div>
+    <div class="chip"><span class="dot" style="background:#0B6E4F"></span><b>D - Ledger</b><i>dense Swiss utility, hairlines, maximum information</i></div>
+  </div>
+</header>
+
+<section class="block" style="border-color:#4fd1a5;">
+  <h2>ROUND 2 - The synthesis <small>your picks unified: D's density + C's roundness + A's serif moments, frosted glass, ink-green + brass, no gradients</small></h2>
+  <p class="note">All ten screens in one system now. Scroll through, then give the verdict at the end of this section.
+     Round 1 below stays for reference - no need to touch it again.</p>
+  <div class="phones">
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#175244"></span><b>R1</b><span>Sign in</span></div>
+      <div class="phone dR"><div class="screen">
+        <div class="sb"><span>9:41</span><span>▮▮▮</span></div>
+        <div class="signin">
+          <div class="wordmark">Ranse</div>
+          <div class="stag">Your mail, delivered</div>
+          <div class="scard">
+            <div class="sfield"><span class="flab">Email address</span>ada@okafortrading.ng</div>
+            <div class="sfield"><span class="flab">Password</span>••••••••••</div>
+            <div class="sbtn">Sign in</div>
+          </div>
+          <div class="shelp">Ranse finds your mail server settings automatically.</div>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#175244"></span><b>R2</b><span>Inbox + glass bar</span></div>
+      <div class="phone dR"><div class="screen">
+        <div class="sb"><span>9:41</span><span>▮▮▮</span></div>
+        <div class="appbar"><div class="abtop"><div>
+          <div class="hello">Good morning</div>
+          <div class="abname">Inbox <span>12 new</span></div></div>
+          <span class="abicons"><svg class="i"><use href="#i-search"/></svg><svg class="i"><use href="#i-menu"/></svg></span></div></div>
+        <div class="foldertabs"><span class="ft on">Primary</span><span class="ft">Junk <span class="n">47</span></span><span class="ft">Trash</span></div>
+        <div class="body" style="overflow:hidden;">
+          <div class="listcard">
+            <div class="row unread"><div class="rtop"><span class="sender">Emeka Nwosu</span><span class="time">09:14</span></div>
+              <div class="rsub">Re: Invoice INV-2041 - July hosting</div>
+              <div class="rflags"><span class="tag">PDF</span><span>lagosprint.com</span></div></div>
+            <div class="row unread"><div class="rtop"><span class="sender">Paystack</span><span class="time">08:52</span></div>
+              <div class="rsub">You received NGN 85,500.00</div></div>
+            <div class="row"><div class="rtop"><span class="sender">Chief Bamidele</span><span class="time">08:10</span></div>
+              <div class="rsub">Board meeting moved to Thursday</div></div>
+            <div class="row"><div class="rtop"><span class="sender">DHL Nigeria</span><span class="time">Yest</span></div>
+              <div class="rsub">Shipment 8843 out for delivery</div></div>
+            <div class="row"><div class="rtop"><span class="sender">Ngozi - Accounts</span><span class="time">Yest</span></div>
+              <div class="rsub">Q3 reconciliation attached</div>
+              <div class="rflags"><span class="tag b">XLSX</span></div></div>
+            <div class="row"><div class="rtop"><span class="sender">Tunde Bakare</span><span class="time">Tue</span></div>
+              <div class="rsub">Website copy edits</div></div>
+          </div>
+          <div class="gbar">
+            <span class="gi active"><svg class="i"><use href="#i-inbox"/></svg>Inbox</span>
+            <span class="gi"><svg class="i"><use href="#i-send"/></svg>Sent</span>
+            <span class="gi"><svg class="i"><use href="#i-draft"/></svg>Drafts</span>
+            <span class="gcompose"><svg class="i"><use href="#i-pen"/></svg></span>
+          </div>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#175244"></span><b>R3</b><span>Folders + accounts</span></div>
+      <div class="phone dR"><div class="drawer">
+        <div class="dhead"><div class="wordmark">Ranse</div><div class="dtag">Okafor Trading Co</div></div>
+        <div class="gcard">
+          <div class="acct active"><span class="sq"></span><span class="amail">ada@okafortrading.ng</span><span class="an">12</span></div>
+          <div class="acct"><span class="sq"></span><span class="amail">info@okafortrading.ng</span><span class="an">3</span></div>
+          <div class="acct"><span class="sq"></span><span class="amail">ceo@delta-farms.com</span><span class="an">-</span></div>
+        </div>
+        <div class="gcard">
+          <div class="f active"><svg class="i"><use href="#i-inbox"/></svg>Inbox<span class="fcount">12 / 148</span></div>
+          <div class="f"><svg class="i"><use href="#i-send"/></svg>Sent<span class="fcount">312</span></div>
+          <div class="f"><svg class="i"><use href="#i-draft"/></svg>Drafts<span class="fcount">2</span></div>
+          <div class="f"><svg class="i"><use href="#i-junk"/></svg>Junk<span class="fcount">47</span></div>
+          <div class="f"><svg class="i"><use href="#i-trash"/></svg>Trash<span class="fcount">9</span></div>
+          <div class="f"><svg class="i"><use href="#i-archive"/></svg>Archive<span class="fcount">1,204</span></div>
+        </div>
+        <div class="dfoot"><svg class="i sm"><use href="#i-plus"/></svg>Add account</div>
+      </div></div>
+    </div>
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#175244"></span><b>R4</b><span>Reading</span></div>
+      <div class="phone dR"><div class="screen">
+        <div class="sb"><span>9:41</span><span>▮▮▮</span></div>
+        <div class="mtool"><svg class="i"><use href="#i-back"/></svg>
+          <span class="sp"><svg class="i"><use href="#i-archive"/></svg><svg class="i"><use href="#i-junk"/></svg><svg class="i"><use href="#i-trash"/></svg></span></div>
+        <div class="msubj">Re: Invoice INV-2041 - July hosting</div>
+        <div class="body" style="overflow:auto;">
+          <div class="mcard">
+            <div class="mmeta"><b>Emeka Nwosu</b> &lt;emeka@lagosprint.com&gt;<br>to <b>ada@okafortrading.ng</b> · 09:14</div>
+            <div class="mbody">
+              <p>Good morning ma,</p>
+              <p>Please find the revised invoice attached. The July hosting figure now reflects the discount we agreed, and the VAT line has been corrected.</p>
+              <p>Kindly confirm receipt so we can close the month's books.</p>
+            </div>
+            <span class="attchip"><svg class="i sm"><use href="#i-attach"/></svg>Invoice-2041.pdf<span>240 KB</span></span>
+          </div>
+          <div class="actionbar">
+            <span class="act primary"><svg class="i sm"><use href="#i-reply"/></svg>Reply</span>
+            <span class="act">All</span>
+            <span class="act"><svg class="i sm"><use href="#i-forward"/></svg>Fwd</span>
+          </div>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#175244"></span><b>R5</b><span>Reply - inline glass pane</span></div>
+      <div class="phone dR"><div class="screen">
+        <div class="sb"><span>9:41</span><span>▮▮▮</span></div>
+        <div class="mtool"><svg class="i"><use href="#i-back"/></svg></div>
+        <div class="msubj" style="font-size:16px;">Re: Invoice INV-2041 - July hosting</div>
+        <div class="body" style="display:flex; flex-direction:column;">
+          <div class="mcard" style="flex:0 1 auto; overflow:hidden;">
+            <div class="mmeta"><b>Emeka Nwosu</b> · 09:14</div>
+            <div class="mbody"><p>Good morning ma, please find the revised invoice attached. The July hosting figure now reflects the discount we agreed…</p></div>
+          </div>
+          <div class="rpane" style="margin-top:auto;">
+            <div class="rlab">Your reply</div>
+            <div class="rto">To <b>emeka@lagosprint.com</b></div>
+            <div class="rtext">Received with thanks, Emeka. Payment goes out this afternoon - transfer advice to follow.<span class="cursor"></span></div>
+            <div class="rbar">
+              <span class="fmt"><b>B</b><i style="font-style:italic;">I</i><u>U</u></span>
+              <svg class="i sm"><use href="#i-attach"/></svg>
+              <span class="sendbtn"><svg class="i sm"><use href="#i-send"/></svg>Send</span>
+            </div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#175244"></span><b>R6</b><span>Compose + rich text</span></div>
+      <div class="phone dR"><div class="cwrap">
+        <div class="sb"><span>9:41</span><span>▮▮▮</span></div>
+        <div class="chead"><svg class="i"><use href="#i-x"/></svg><span class="ct">New message</span>
+          <span class="sendbtn" style="margin-left:auto;"><svg class="i sm"><use href="#i-send"/></svg>Send</span></div>
+        <div class="ccard">
+          <div class="cfield"><span class="lab">From</span><span class="val">ada@okafortrading.ng</span><span class="cc">change</span></div>
+          <div class="cfield"><span class="lab">To</span><span class="chiprec">Emeka Nwosu ✕</span><span class="cc">+ Cc/Bcc</span></div>
+          <div class="cfield"><span class="lab">Subject</span><span class="csubject">Payment confirmation - INV-2041</span></div>
+          <div class="cbody">Dear Emeka,<br><br>The transfer went out at <b>2:15pm today</b> from our GTBank account. Kindly confirm once it reflects.<span class="cursor"></span></div>
+        </div>
+        <div class="fmtglass"><span class="on"><b>B</b></span><span><i style="font-style:italic;">I</i></span><span><u>U</u></span><span>Aa</span><span><svg class="i sm" style="vertical-align:-4px;"><use href="#i-attach"/></svg></span></div>
+      </div></div>
+    </div>
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#175244"></span><b>R7</b><span>Search</span></div>
+      <div class="phone dR"><div class="screen">
+        <div class="sb"><span>9:41</span><span>▮▮▮</span></div>
+        <div class="appbar"><div class="abtop"><svg class="i"><use href="#i-back"/></svg>
+          <div class="search" style="margin:0; flex:1;"><svg class="i sm"><use href="#i-search"/></svg>invoice|</div></div></div>
+        <div class="fchips"><span class="fc on">All</span><span class="fc">Unread</span><span class="fc">Files</span><span class="fc">This month</span></div>
+        <div class="glabel">People</div>
+        <div class="pplrow"><span class="ppl">Emeka Nwosu <span>· 14</span></span><span class="ppl">Ngozi <span>· 6</span></span></div>
+        <div class="glabel">Messages · 23</div>
+        <div class="body">
+          <div class="listcard" style="margin-top:2px;">
+            <div class="row unread"><div class="rtop"><span class="sender">Emeka Nwosu</span><span class="time">09:14</span></div>
+              <div class="rsub">Re: Invoice INV-2041 - July hosting</div>
+              <div class="rflags"><span class="tag">PDF</span><span>inbox</span></div></div>
+            <div class="row"><div class="rtop"><span class="sender">Ngozi - Accounts</span><span class="time">28/07</span></div>
+              <div class="rsub">Invoice batch for signing</div>
+              <div class="rflags"><span>inbox</span></div></div>
+            <div class="row"><div class="rtop"><span class="sender">You → Emeka</span><span class="time">02/07</span></div>
+              <div class="rsub">June invoice approved</div>
+              <div class="rflags"><span>sent</span></div></div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#175244"></span><b>R8</b><span>Settings</span></div>
+      <div class="phone dR"><div class="screen">
+        <div class="sb"><span>9:41</span><span>▮▮▮</span></div>
+        <div class="mtool"><svg class="i"><use href="#i-back"/></svg></div>
+        <div class="body" style="overflow:auto;"><div class="set">
+          <div class="sethead">Settings</div>
+          <div class="seg"><span class="on">Light</span><span>Dark</span><span>Auto</span></div>
+          <div class="gcard">
+            <div class="srow"><svg class="i"><use href="#i-user"/></svg><div><div class="st">Accounts</div>
+              <div class="ss">ada@okafortrading.ng + 2 more</div></div><svg class="i sm" style="margin-left:auto; color:var(--dim);"><use href="#i-chev"/></svg></div>
+            <div class="srow"><svg class="i"><use href="#i-bell"/></svg><div><div class="st">New mail alerts</div>
+              <div class="ss">On for all mailboxes</div></div><span class="tgl on"></span></div>
+            <div class="srow"><svg class="i"><use href="#i-pen"/></svg><div><div class="st">Signature</div>
+              <div class="ss">Warm regards, Adaeze - Okafor Trading</div></div><svg class="i sm" style="margin-left:auto; color:var(--dim);"><use href="#i-chev"/></svg></div>
+          </div>
+          <div class="gcard">
+            <div class="srow"><svg class="i"><use href="#i-mail"/></svg><div><div class="st">Updates</div>
+              <div class="ss">Version 0.2.0 - up to date</div></div></div>
+          </div>
+        </div></div>
+      </div></div>
+    </div>
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#175244"></span><b>R9</b><span>Selecting mail</span></div>
+      <div class="phone dR"><div class="screen">
+        <div class="sb"><span>9:41</span><span>▮▮▮</span></div>
+        <div class="selhead"><b>2 selected</b>
+          <svg class="i sm"><use href="#i-archive"/></svg><svg class="i sm"><use href="#i-junk"/></svg>
+          <svg class="i sm"><use href="#i-trash"/></svg><svg class="i sm"><use href="#i-x"/></svg></div>
+        <div class="body">
+          <div class="listcard" style="margin-top:0;">
+            <div class="rowsel on"><span class="cb on"></span><div class="rw">
+              <div class="rtop"><span class="sender">Emeka Nwosu</span><span class="time">09:14</span></div>
+              <div class="rsub">Re: Invoice INV-2041 - July hosting</div></div></div>
+            <div class="rowsel on"><span class="cb on"></span><div class="rw">
+              <div class="rtop"><span class="sender">Jumia Business</span><span class="time">Tue</span></div>
+              <div class="rsub">Order JB-2211 confirmed</div></div></div>
+            <div class="rowsel"><span class="cb"></span><div class="rw">
+              <div class="rtop"><span class="sender">Chief Bamidele</span><span class="time">08:10</span></div>
+              <div class="rsub">Board meeting moved to Thursday</div></div></div>
+            <div class="rowsel"><span class="cb"></span><div class="rw">
+              <div class="rtop"><span class="sender">DHL Nigeria</span><span class="time">Yest</span></div>
+              <div class="rsub">Shipment 8843 out for delivery</div></div></div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#175244"></span><b>R10</b><span>Inbox zero</span></div>
+      <div class="phone dR"><div class="screen">
+        <div class="sb"><span>9:41</span><span>▮▮▮</span></div>
+        <div class="appbar"><div class="abtop"><div>
+          <div class="hello">Well done</div>
+          <div class="abname">Inbox</div></div>
+          <span class="abicons"><svg class="i"><use href="#i-search"/></svg><svg class="i"><use href="#i-menu"/></svg></span></div></div>
+        <div class="body">
+          <div class="empty">
+            <div class="eart">All clear.</div>
+            <div class="etitle">Every letter answered</div>
+            <div class="etext">148 processed · 0 pending · last sync 09:41</div>
+          </div>
+          <div class="gbar">
+            <span class="gi active"><svg class="i"><use href="#i-inbox"/></svg>Inbox</span>
+            <span class="gi"><svg class="i"><use href="#i-send"/></svg>Sent</span>
+            <span class="gi"><svg class="i"><use href="#i-draft"/></svg>Drafts</span>
+            <span class="gcompose"><svg class="i"><use href="#i-pen"/></svg></span>
+          </div>
+        </div>
+      </div></div>
+    </div>
+
+  </div>
+
+  <div class="grid2" style="margin-top:24px;">
+    <div class="q">
+      <label class="t">Verdict on the synthesis?</label>
+      <div class="chips">
+        <label><input type="radio" name="q-synth" data-q="synthesis_verdict" value="approve">Approve - build it in Flutter</label>
+        <label><input type="radio" name="q-synth" data-q="synthesis_verdict" value="tweaks">Close - apply my notes first</label>
+        <label><input type="radio" name="q-synth" data-q="synthesis_verdict" value="rework">Not there yet - rework</label>
+      </div>
+    </div>
+    <div class="q full">
+      <label class="t">Synthesis notes <em>what to change, screen by screen if you like</em></label>
+      <textarea data-q="synthesis_notes" placeholder="e.g. glass bar bigger; brass only on inbox-zero; subject lines larger…"></textarea>
+    </div>
+  </div>
+</section>
+
+<section class="block">
+  <h2>The brief <small>answer what you can - blank is fine, silence never becomes a default</small></h2>
+  <div class="grid2">
+    <div class="q">
+      <label class="t">Who uses Ranse day to day? <em>roles, kind of businesses</em></label>
+      <input type="text" data-q="users" placeholder="e.g. shop owners, office admins, my hosting clients' staff">
+    </div>
+    <div class="q">
+      <label class="t">Three words Ranse should feel like</label>
+      <div class="chips">
+        <label><input type="checkbox" data-q="feel" value="professional">Professional</label>
+        <label><input type="checkbox" data-q="feel" value="friendly">Friendly</label>
+        <label><input type="checkbox" data-q="feel" value="premium">Premium</label>
+        <label><input type="checkbox" data-q="feel" value="minimal">Minimal</label>
+        <label><input type="checkbox" data-q="feel" value="bold">Bold</label>
+        <label><input type="checkbox" data-q="feel" value="calm">Calm</label>
+        <label><input type="checkbox" data-q="feel" value="techy">Techy</label>
+        <label><input type="checkbox" data-q="feel" value="playful">Playful</label>
+      </div>
+    </div>
+    <div class="q">
+      <label class="t">Mail apps whose feel you rate <em>tick any</em></label>
+      <div class="chips">
+        <label><input type="checkbox" data-q="apps" value="gmail">Gmail</label>
+        <label><input type="checkbox" data-q="apps" value="outlook">Outlook</label>
+        <label><input type="checkbox" data-q="apps" value="spark">Spark</label>
+        <label><input type="checkbox" data-q="apps" value="hey">HEY</label>
+        <label><input type="checkbox" data-q="apps" value="telegram">Telegram</label>
+        <label><input type="checkbox" data-q="apps" value="whatsapp">WhatsApp</label>
+      </div>
+    </div>
+    <div class="q">
+      <label class="t">List density</label>
+      <div class="chips">
+        <label><input type="radio" name="q-density" data-q="density" value="comfortable">Comfortable - breathing room</label>
+        <label><input type="radio" name="q-density" data-q="density" value="compact">Compact - more mail per screen</label>
+      </div>
+    </div>
+    <div class="q">
+      <label class="t">Sender avatars in the inbox</label>
+      <div class="chips">
+        <label><input type="radio" name="q-avatars" data-q="avatars" value="colourful">Colourful initials</label>
+        <label><input type="radio" name="q-avatars" data-q="avatars" value="plain">Quiet initials</label>
+        <label><input type="radio" name="q-avatars" data-q="avatars" value="none">No avatars</label>
+      </div>
+    </div>
+    <div class="q">
+      <label class="t">Replying should feel like</label>
+      <div class="chips">
+        <label><input type="radio" name="q-reply" data-q="replystyle" value="fullscreen">Full-screen compose</label>
+        <label><input type="radio" name="q-reply" data-q="replystyle" value="sheet">Bottom sheet</label>
+        <label><input type="radio" name="q-reply" data-q="replystyle" value="thread">Chat-style thread</label>
+        <label><input type="radio" name="q-reply" data-q="replystyle" value="inline">Inline under the message</label>
+      </div>
+    </div>
+    <div class="q">
+      <label class="t">Brand accent</label>
+      <div class="chips">
+        <label><input type="radio" name="q-accent" data-q="accent" value="green">Keep Ranse green</label>
+        <label><input type="radio" name="q-accent" data-q="accent" value="terracotta">Terracotta</label>
+        <label><input type="radio" name="q-accent" data-q="accent" value="indigo">Indigo</label>
+        <label><input type="radio" name="q-accent" data-q="accent" value="open">Open - convince me</label>
+      </div>
+    </div>
+    <div class="q">
+      <label class="t">Must include <em>anything the design has to carry</em></label>
+      <input type="text" data-q="must_include" placeholder="e.g. unread counts, attachment preview, sender email visible">
+    </div>
+    <div class="q full">
+      <label class="t">Must NOT include <em>the anti-brief</em></label>
+      <input type="text" data-q="must_avoid" placeholder="e.g. no gradients, no rounded bubbles, nothing childish">
+    </div>
+    <div class="q full">
+      <label class="t">References <em>apps, sites, screenshots - paths or links</em></label>
+      <textarea data-q="references" placeholder="anything that already looks right"></textarea>
+    </div>
+  </div>
+</section>
+
+<h2 class="screens-title" style="font-size:26px; font-weight:800;">The screens</h2>
+
+<!-- ================= SCREEN 1 - SIGN IN ================= -->
+<section class="block" data-screen-section="signin">
+  <h2>1 - Sign in <small>first thing a customer ever sees; email + password, settings auto-found</small></h2>
+  <div class="phones">
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#1D5C45"></span><b>A</b><span>Ivory Post</span></div>
+      <div class="phone dA"><div class="screen">
+        <div class="sb"><span>9:41</span><span>▮▮▮</span></div>
+        <div class="signin">
+          <div class="wordmark">Ranse</div>
+          <div class="stag">Your mail, delivered</div>
+          <div class="sfield"><span class="flab">Email address</span>ada@okafortrading.ng</div>
+          <div class="sfield"><span class="flab">Password</span>••••••••••</div>
+          <div class="sbtn">Sign in</div>
+          <div class="shelp">Ranse finds your mail server settings automatically.<br>No setup, no jargon.</div>
+        </div>
+      </div></div>
+      <div class="pickrow"><input type="radio" id="signin-A" name="sel-signin" data-screen="signin" value="A"><label for="signin-A">Pick A for this screen</label></div>
+    </div>
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#C8F55B"></span><b>B</b><span>Signal</span></div>
+      <div class="phone dB"><div class="screen">
+        <div class="sb"><span>9:41</span><span>▮▮▮</span></div>
+        <div class="signin">
+          <div class="logo">Ranse<em>.</em></div>
+          <div class="stag">The mail app for your business domain. Sign in with the email your host gave you.</div>
+          <div class="sfield"><span class="flab">Email</span>ada@okafortrading.ng</div>
+          <div class="sfield"><span class="flab">Password</span>••••••••••</div>
+          <div class="sbtn">Sign in →</div>
+          <div class="shelp">Server settings are discovered automatically.</div>
+        </div>
+      </div></div>
+      <div class="pickrow"><input type="radio" id="signin-B" name="sel-signin" data-screen="signin" value="B"><label for="signin-B">Pick B for this screen</label></div>
+    </div>
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#C4552D"></span><b>C</b><span>Sunbird</span></div>
+      <div class="phone dC"><div class="screen">
+        <div class="sb"><span>9:41</span><span>▮▮▮</span></div>
+        <div class="signin">
+          <div class="slogo"><svg class="i" style="width:34px;height:34px"><use href="#i-send"/></svg></div>
+          <div class="stitle">Welcome to <span>Ranse</span></div>
+          <div class="stag">Your business email, right on your phone. Just your email and password - we handle the rest.</div>
+          <div class="sfield"><span class="flab">Email address</span>ada@okafortrading.ng</div>
+          <div class="sfield"><span class="flab">Password</span>••••••••••</div>
+          <div class="sbtn">Let's go</div>
+          <div class="shelp">Works with any cPanel-hosted mailbox.</div>
+        </div>
+      </div></div>
+      <div class="pickrow"><input type="radio" id="signin-C" name="sel-signin" data-screen="signin" value="C"><label for="signin-C">Pick C for this screen</label></div>
+    </div>
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#0B6E4F"></span><b>D</b><span>Ledger</span></div>
+      <div class="phone dD"><div class="screen">
+        <div class="sb"><span>9:41</span><span>▮▮▮</span></div>
+        <div class="signin">
+          <div class="ttl">Ranse<span>.</span></div>
+          <div class="stag">Sign in with your domain mailbox. IMAP and SMTP configured automatically.</div>
+          <div class="sfield"><span class="flab">Email</span>ada@okafortrading.ng</div>
+          <div class="sfield"><span class="flab">Password</span>••••••••••</div>
+          <div class="sbtn">Sign in</div>
+          <div class="shelp">Advanced: set server and ports manually.</div>
+        </div>
+      </div></div>
+      <div class="pickrow"><input type="radio" id="signin-D" name="sel-signin" data-screen="signin" value="D"><label for="signin-D">Pick D for this screen</label></div>
+    </div>
+
+  </div>
+  <div class="screen-note"><input type="text" data-note="signin" placeholder="Notes on the sign-in screen (optional)"></div>
+</section>
+
+<!-- ================= SCREEN 2 - INBOX ================= -->
+<section class="block" data-screen-section="inbox">
+  <h2>2 - Inbox <small>the screen customers live in - the biggest decision here</small></h2>
+  <div class="phones">
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#1D5C45"></span><b>A</b><span>Ivory Post</span></div>
+      <div class="phone dA"><div class="screen">
+        <div class="sb"><span>9:41</span><span>▮▮▮</span></div>
+        <div class="appbar"><svg class="i"><use href="#i-menu"/></svg><span class="wordmark">Ranse</span>
+          <span class="folder-ind">Inbox · 12 <svg class="i xs"><use href="#i-chev"/></svg></span></div>
+        <div class="search"><svg class="i sm"><use href="#i-search"/></svg>Search mail</div>
+        <div class="body"><div class="list">
+          <div class="row unread"><div class="rtop"><span class="sender">Emeka Nwosu</span><span class="time">09:14</span></div>
+            <div class="rsub">Re: Invoice INV-2041 - July hosting</div>
+            <div class="rprev">Good morning ma, please find the revised invoice attached. The</div>
+            <span class="rmeta"><svg class="i xs"><use href="#i-attach"/></svg></span></div>
+          <div class="row unread"><div class="rtop"><span class="sender">Paystack</span><span class="time">08:52</span></div>
+            <div class="rsub">You received NGN 85,500.00</div>
+            <div class="rprev">Payment from Delta Farms Ltd has settled to your account.</div></div>
+          <div class="row"><div class="rtop"><span class="sender">Chief Bamidele</span><span class="time">08:10</span></div>
+            <div class="rsub">Board meeting moved to Thursday</div>
+            <div class="rprev">Gentlemen, due to the governor's visit the meeting will now</div></div>
+          <div class="row"><div class="rtop"><span class="sender">DHL Nigeria</span><span class="time">Yest</span></div>
+            <div class="rsub">Shipment 8843 out for delivery</div>
+            <div class="rprev">Your package will arrive today between 10am and 4pm.</div></div>
+          <div class="row"><div class="rtop"><span class="sender">Ngozi - Accounts</span><span class="time">Yest</span></div>
+            <div class="rsub">Q3 reconciliation attached</div>
+            <div class="rprev">As discussed, the full workbook with the bank lines is</div>
+            <span class="rmeta"><svg class="i xs"><use href="#i-attach"/></svg></span></div>
+          <div class="row"><div class="rtop"><span class="sender">Tunde Bakare</span><span class="time">Tue</span></div>
+            <div class="rsub">Website copy edits</div>
+            <div class="rprev">The About page reads well now. Two small things on the</div></div>
+        </div>
+        <div class="fab"><svg class="i sm"><use href="#i-pen"/></svg>Compose</div></div>
+      </div></div>
+      <div class="pickrow"><input type="radio" id="inbox-A" name="sel-inbox" data-screen="inbox" value="A"><label for="inbox-A">Pick A for this screen</label></div>
+    </div>
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#C8F55B"></span><b>B</b><span>Signal</span></div>
+      <div class="phone dB"><div class="screen">
+        <div class="sb"><span>9:41</span><span>▮▮▮</span></div>
+        <div class="appbar"><div class="abtop"><svg class="i"><use href="#i-menu"/></svg>
+          <span class="logo">Ranse<em>.</em></span><span class="av-me">AO</span></div>
+          <div class="search"><svg class="i sm"><use href="#i-search"/></svg>Search everything</div></div>
+        <div class="foldertabs">
+          <span class="ft on">Inbox <span class="n">12</span></span>
+          <span class="ft">Sent</span><span class="ft">Junk <span class="n">47</span></span><span class="ft">Drafts</span>
+        </div>
+        <div class="body"><div class="list">
+          <div class="row unread"><span class="av">EN</span><div class="rmain">
+            <div class="rtop"><span class="sender">Emeka Nwosu</span><span class="time">09:14</span></div>
+            <div class="rsub">Re: Invoice INV-2041 - July hosting</div>
+            <div class="rprev">Good morning ma, please find the revised invoice</div>
+            <div class="rbadges"><span class="bdg lime">NEW</span><span class="bdg"><svg class="i xs"><use href="#i-attach"/></svg>PDF</span></div></div></div>
+          <div class="row unread"><span class="av">P</span><div class="rmain">
+            <div class="rtop"><span class="sender">Paystack</span><span class="time">08:52</span></div>
+            <div class="rsub">You received NGN 85,500.00</div>
+            <div class="rprev">Payment from Delta Farms Ltd has settled.</div></div></div>
+          <div class="row"><span class="av">CB</span><div class="rmain">
+            <div class="rtop"><span class="sender">Chief Bamidele</span><span class="time">08:10</span></div>
+            <div class="rsub">Board meeting moved to Thursday</div>
+            <div class="rprev">Gentlemen, due to the governor's visit the</div></div></div>
+          <div class="row"><span class="av">D</span><div class="rmain">
+            <div class="rtop"><span class="sender">DHL Nigeria</span><span class="time">Yest</span></div>
+            <div class="rsub">Shipment 8843 out for delivery</div>
+            <div class="rprev">Your package arrives today between 10am</div></div></div>
+          <div class="row"><span class="av">N</span><div class="rmain">
+            <div class="rtop"><span class="sender">Ngozi - Accounts</span><span class="time">Yest</span></div>
+            <div class="rsub">Q3 reconciliation attached</div>
+            <div class="rprev">As discussed, the full workbook with the</div></div></div>
+        </div>
+        <div class="fab"><svg class="i"><use href="#i-pen"/></svg></div>
+        <div class="nav">
+          <span class="ni active"><svg class="i sm"><use href="#i-inbox"/></svg>Mail</span>
+          <span class="ni"><svg class="i sm"><use href="#i-search"/></svg>Search</span>
+          <span class="ni"><svg class="i sm"><use href="#i-folder"/></svg>Folders</span>
+          <span class="ni"><svg class="i sm"><use href="#i-sliders"/></svg>Settings</span>
+        </div></div>
+      </div></div>
+      <div class="pickrow"><input type="radio" id="inbox-B" name="sel-inbox" data-screen="inbox" value="B"><label for="inbox-B">Pick B for this screen</label></div>
+    </div>
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#C4552D"></span><b>C</b><span>Sunbird</span></div>
+      <div class="phone dC"><div class="screen">
+        <div class="sb"><span>9:41</span><span>▮▮▮</span></div>
+        <div class="appbar"><div class="abtop"><div>
+          <div class="hello">Good morning</div>
+          <div class="abname">Adaeze <span>· 12 new</span></div></div>
+          <span class="av-me">AO</span></div></div>
+        <div class="search"><svg class="i sm"><use href="#i-search"/></svg>Search your mail</div>
+        <div class="foldertabs"><span class="ft on">Inbox</span><span class="ft">Sent</span><span class="ft">Drafts</span><span class="ft">Junk</span><span class="ft">Trash</span></div>
+        <div class="body"><div class="list">
+          <div class="row unread"><span class="av t">EN</span><div class="rmain">
+            <div class="rtop"><span class="sender">Emeka Nwosu</span><span class="time">09:14</span></div>
+            <div class="rsub">Re: Invoice INV-2041 - July hosting</div>
+            <div class="rprev">Good morning ma, please find the revised</div>
+            <span class="attpill"><svg class="i xs"><use href="#i-attach"/></svg>Invoice-2041.pdf</span></div></div>
+          <div class="row unread"><span class="av n">P</span><div class="rmain">
+            <div class="rtop"><span class="sender">Paystack</span><span class="newpill">NEW</span><span class="time">08:52</span></div>
+            <div class="rsub">You received NGN 85,500.00</div>
+            <div class="rprev">Payment from Delta Farms Ltd has settled.</div></div></div>
+          <div class="row"><span class="av o">CB</span><div class="rmain">
+            <div class="rtop"><span class="sender">Chief Bamidele</span><span class="time">08:10</span></div>
+            <div class="rsub">Board meeting moved to Thursday</div>
+            <div class="rprev">Gentlemen, due to the governor's visit</div></div></div>
+          <div class="row"><span class="av n">D</span><div class="rmain">
+            <div class="rtop"><span class="sender">DHL Nigeria</span><span class="time">Yest</span></div>
+            <div class="rsub">Shipment 8843 out for delivery</div>
+            <div class="rprev">Your package arrives today between 10am</div></div></div>
+          <div class="row"><span class="av t">N</span><div class="rmain">
+            <div class="rtop"><span class="sender">Ngozi - Accounts</span><span class="time">Yest</span></div>
+            <div class="rsub">Q3 reconciliation attached</div>
+            <div class="rprev">As discussed, the full workbook is here</div></div></div>
+        </div>
+        <div class="fab"><svg class="i"><use href="#i-pen"/></svg></div>
+        <div class="nav">
+          <span class="ni active"><svg class="i sm"><use href="#i-mail"/></svg>Mail<span class="nb">12</span></span>
+          <span class="ni"><svg class="i sm"><use href="#i-search"/></svg>Search</span>
+          <span class="ni"><svg class="i sm"><use href="#i-folder"/></svg>Folders</span>
+          <span class="ni"><svg class="i sm"><use href="#i-user"/></svg>Me</span>
+        </div></div>
+      </div></div>
+      <div class="pickrow"><input type="radio" id="inbox-C" name="sel-inbox" data-screen="inbox" value="C"><label for="inbox-C">Pick C for this screen</label></div>
+    </div>
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#0B6E4F"></span><b>D</b><span>Ledger</span></div>
+      <div class="phone dD"><div class="screen">
+        <div class="sb"><span>9:41</span><span>▮▮▮</span></div>
+        <div class="appbar"><svg class="i"><use href="#i-menu"/></svg><span class="ttl">Inbox</span>
+          <span class="cnt">12 / 148</span>
+          <span class="icons"><svg class="i"><use href="#i-search"/></svg><svg class="i"><use href="#i-dots"/></svg></span></div>
+        <div class="accstrip"><span class="k">Account</span><b>ada@okafortrading.ng</b>
+          <span class="sw">switch <svg class="i xs"><use href="#i-chev"/></svg></span></div>
+        <div class="ftabs"><span class="ftab on">Inbox <span class="n">12</span></span><span class="ftab">Sent</span><span class="ftab">Drafts <span class="n">2</span></span><span class="ftab">Junk</span><span class="ftab">Trash</span></div>
+        <div class="body"><div class="list">
+          <div class="row unread"><span class="no">01</span><div class="rmain">
+            <div class="rtop"><span class="sender">Emeka Nwosu</span><span class="time">09:14</span></div>
+            <div class="rsub">Re: Invoice INV-2041 - July hosting</div>
+            <div class="rflags"><span class="tag a">PDF</span><span>lagosprint.com</span></div></div></div>
+          <div class="row unread"><span class="no">02</span><div class="rmain">
+            <div class="rtop"><span class="sender">Paystack</span><span class="time">08:52</span></div>
+            <div class="rsub">You received NGN 85,500.00</div></div></div>
+          <div class="row"><span class="no">03</span><div class="rmain">
+            <div class="rtop"><span class="sender">Chief Bamidele</span><span class="time">08:10</span></div>
+            <div class="rsub">Board meeting moved to Thursday</div></div></div>
+          <div class="row"><span class="no">04</span><div class="rmain">
+            <div class="rtop"><span class="sender">DHL Nigeria</span><span class="time">Yest</span></div>
+            <div class="rsub">Shipment 8843 out for delivery</div></div></div>
+          <div class="row"><span class="no">05</span><div class="rmain">
+            <div class="rtop"><span class="sender">Ngozi - Accounts</span><span class="time">Yest</span></div>
+            <div class="rsub">Q3 reconciliation attached</div>
+            <div class="rflags"><span class="tag a">XLSX</span></div></div></div>
+          <div class="row"><span class="no">06</span><div class="rmain">
+            <div class="rtop"><span class="sender">Jumia Business</span><span class="time">Tue</span></div>
+            <div class="rsub">Order JB-2211 confirmed</div></div></div>
+          <div class="row"><span class="no">07</span><div class="rmain">
+            <div class="rtop"><span class="sender">Tunde Bakare</span><span class="time">Tue</span></div>
+            <div class="rsub">Website copy edits</div></div></div>
+        </div>
+        <div class="fab"><svg class="i sm"><use href="#i-pen"/></svg>New message</div></div>
+      </div></div>
+      <div class="pickrow"><input type="radio" id="inbox-D" name="sel-inbox" data-screen="inbox" value="D"><label for="inbox-D">Pick D for this screen</label></div>
+    </div>
+
+  </div>
+  <div class="screen-note"><input type="text" data-note="inbox" placeholder="Notes on the inbox (optional)"></div>
+</section>
+
+<!-- ================= SCREEN 3 - FOLDERS + ACCOUNT SWITCHER ================= -->
+<section class="block" data-screen-section="drawer">
+  <h2>3 - Folders + account switcher <small>Inbox, Sent, Drafts, Junk, Trash - and hopping between mailboxes</small></h2>
+  <div class="phones">
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#1D5C45"></span><b>A</b><span>Ivory Post</span></div>
+      <div class="phone dA"><div class="drawer">
+        <div class="dhead"><div class="wordmark">Ranse</div><div class="dtag">Okafor Trading Co</div></div>
+        <div class="accounts">
+          <div class="acct"><span class="aav">A</span><div><div class="aname">Adaeze Okafor</div>
+            <div class="amail">ada@okafortrading.ng</div></div><svg class="i sm"><use href="#i-check"/></svg></div>
+          <div class="acct alt"><span class="aav">I</span><div><div class="aname">Info desk</div>
+            <div class="amail">info@okafortrading.ng</div></div></div>
+        </div>
+        <div class="folders">
+          <div class="f active"><svg class="i sm"><use href="#i-inbox"/></svg><span>Inbox</span><span class="fcount">12</span></div>
+          <div class="f"><svg class="i sm"><use href="#i-send"/></svg><span>Sent</span></div>
+          <div class="f"><svg class="i sm"><use href="#i-draft"/></svg><span>Drafts</span><span class="fcount">2</span></div>
+          <div class="f"><svg class="i sm"><use href="#i-junk"/></svg><span>Junk</span><span class="fcount">47</span></div>
+          <div class="f"><svg class="i sm"><use href="#i-trash"/></svg><span>Trash</span></div>
+          <div class="f"><svg class="i sm"><use href="#i-archive"/></svg><span>Archive</span></div>
+        </div>
+        <div style="margin-top:auto; display:flex; align-items:center; gap:10px; color:var(--dim); font-size:13px; padding:8px 2px;">
+          <svg class="i sm"><use href="#i-plus"/></svg>Add another account</div>
+      </div></div>
+      <div class="pickrow"><input type="radio" id="drawer-A" name="sel-drawer" data-screen="drawer" value="A"><label for="drawer-A">Pick A for this screen</label></div>
+    </div>
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#C8F55B"></span><b>B</b><span>Signal</span></div>
+      <div class="phone dB"><div class="drawer">
+        <div class="logo">Ranse<em>.</em></div>
+        <div class="acard"><span class="aav">AO</span><div><div class="aname">Adaeze Okafor</div>
+          <div class="amail">ada@okafortrading.ng</div></div><svg class="i sm"><use href="#i-check"/></svg></div>
+        <div class="amini"><span class="m">IN</span><span class="m">DF</span><span class="m add">+</span></div>
+        <div class="folders">
+          <div class="f active"><svg class="i sm"><use href="#i-inbox"/></svg>Inbox<span class="fcount">12</span></div>
+          <div class="f"><svg class="i sm"><use href="#i-send"/></svg>Sent</div>
+          <div class="f"><svg class="i sm"><use href="#i-draft"/></svg>Drafts<span class="fcount">2</span></div>
+          <div class="f"><svg class="i sm"><use href="#i-junk"/></svg>Junk<span class="fcount">47</span></div>
+          <div class="f"><svg class="i sm"><use href="#i-trash"/></svg>Trash</div>
+          <div class="f"><svg class="i sm"><use href="#i-archive"/></svg>Archive</div>
+        </div>
+        <div style="margin-top:auto; display:flex; gap:10px; align-items:center; color:#9DB8AC; font-size:13px;">
+          <svg class="i sm"><use href="#i-sliders"/></svg>Settings</div>
+      </div></div>
+      <div class="pickrow"><input type="radio" id="drawer-B" name="sel-drawer" data-screen="drawer" value="B"><label for="drawer-B">Pick B for this screen</label></div>
+    </div>
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#C4552D"></span><b>C</b><span>Sunbird</span></div>
+      <div class="phone dC"><div class="drawer">
+        <div class="dtitle">Your <span>mailboxes</span></div>
+        <div class="acard"><span class="aav">AO</span><div><div class="aname">Adaeze Okafor</div>
+          <div class="amail">ada@okafortrading.ng</div></div><svg class="i sm"><use href="#i-check"/></svg></div>
+        <div class="arow">
+          <div class="apill"><span class="aav">IN</span><span>info@…</span></div>
+          <div class="apill add"><span class="aav">+</span><span>Add</span></div>
+        </div>
+        <div class="folders">
+          <div class="f active"><span class="ic"><svg class="i sm"><use href="#i-inbox"/></svg></span>Inbox<span class="fcount">12</span></div>
+          <div class="f"><span class="ic"><svg class="i sm"><use href="#i-send"/></svg></span>Sent<span class="fcount"></span></div>
+          <div class="f"><span class="ic"><svg class="i sm"><use href="#i-draft"/></svg></span>Drafts<span class="fcount">2</span></div>
+          <div class="f"><span class="ic"><svg class="i sm"><use href="#i-junk"/></svg></span>Junk<span class="fcount">47</span></div>
+          <div class="f"><span class="ic"><svg class="i sm"><use href="#i-trash"/></svg></span>Trash<span class="fcount"></span></div>
+        </div>
+      </div></div>
+      <div class="pickrow"><input type="radio" id="drawer-C" name="sel-drawer" data-screen="drawer" value="C"><label for="drawer-C">Pick C for this screen</label></div>
+    </div>
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#0B6E4F"></span><b>D</b><span>Ledger</span></div>
+      <div class="phone dD"><div class="drawer">
+        <div class="dhead"><div class="ttl">Ranse<span>.</span></div></div>
+        <div class="accounts">
+          <div class="acct active"><span class="sq"></span><span class="amail">ada@okafortrading.ng</span><span class="an">12 unread</span></div>
+          <div class="acct"><span class="sq"></span><span class="amail">info@okafortrading.ng</span><span class="an">3 unread</span></div>
+          <div class="acct"><span class="sq"></span><span class="amail">ceo@delta-farms.com</span><span class="an">-</span></div>
+        </div>
+        <div class="folders">
+          <div class="f active"><svg class="i sm"><use href="#i-inbox"/></svg>Inbox<span class="fcount">12 / 148</span></div>
+          <div class="f"><svg class="i sm"><use href="#i-send"/></svg>Sent<span class="fcount">312</span></div>
+          <div class="f"><svg class="i sm"><use href="#i-draft"/></svg>Drafts<span class="fcount">2</span></div>
+          <div class="f"><svg class="i sm"><use href="#i-junk"/></svg>Junk<span class="fcount">47</span></div>
+          <div class="f"><svg class="i sm"><use href="#i-trash"/></svg>Trash<span class="fcount">9</span></div>
+          <div class="f"><svg class="i sm"><use href="#i-archive"/></svg>Archive<span class="fcount">1,204</span></div>
+        </div>
+        <div class="dfoot"><svg class="i sm"><use href="#i-plus"/></svg>Add account</div>
+      </div></div>
+      <div class="pickrow"><input type="radio" id="drawer-D" name="sel-drawer" data-screen="drawer" value="D"><label for="drawer-D">Pick D for this screen</label></div>
+    </div>
+
+  </div>
+  <div class="screen-note"><input type="text" data-note="drawer" placeholder="Notes on folders / account switching (optional)"></div>
+</section>
+
+<!-- ================= SCREEN 4 - READING A MESSAGE ================= -->
+<section class="block" data-screen-section="read">
+  <h2>4 - Reading a message <small>subject, sender, body, attachments, actions</small></h2>
+  <div class="phones">
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#1D5C45"></span><b>A</b><span>Ivory Post</span></div>
+      <div class="phone dA"><div class="screen">
+        <div class="sb"><span>9:41</span><span>▮▮▮</span></div>
+        <div class="appbar"><svg class="i"><use href="#i-back"/></svg>
+          <span class="folder-ind" style="margin-left:auto"><svg class="i sm"><use href="#i-archive"/></svg></span>
+          <svg class="i"><use href="#i-trash"/></svg><svg class="i"><use href="#i-dots"/></svg></div>
+        <div class="body" style="overflow:auto"><div class="msg">
+          <div class="msubj">Re: Invoice INV-2041 - July hosting</div>
+          <div class="mfrom"><span class="aav">E</span><div><div class="fname">Emeka Nwosu</div>
+            <div class="fmail">emeka@lagosprint.com</div></div><span class="mtime">09:14</span></div>
+          <div class="mbody">
+            <p>Good morning ma,</p>
+            <p>Please find the revised invoice attached. The July hosting figure now reflects the discount we agreed, and the VAT line has been corrected.</p>
+            <p>Kindly confirm receipt so we can close the month's books.</p>
+            <p>Warm regards,<br>Emeka</p>
+          </div>
+          <span class="attchip"><svg class="i sm"><use href="#i-attach"/></svg><b>Invoice-2041.pdf</b><span>240 KB</span></span>
+        </div></div>
+        <div class="actionbar">
+          <span class="act primary"><svg class="i sm"><use href="#i-reply"/></svg>Reply</span>
+          <span class="act"><svg class="i sm"><use href="#i-replyall"/></svg>All</span>
+          <span class="act"><svg class="i sm"><use href="#i-forward"/></svg>Forward</span>
+        </div>
+      </div></div>
+      <div class="pickrow"><input type="radio" id="read-A" name="sel-read" data-screen="read" value="A"><label for="read-A">Pick A for this screen</label></div>
+    </div>
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#C8F55B"></span><b>B</b><span>Signal</span></div>
+      <div class="phone dB"><div class="msgwrap">
+        <div class="sb"><span>9:41</span><span>▮▮▮</span></div>
+        <div class="mhead">
+          <div class="mtop"><svg class="i"><use href="#i-back"/></svg>
+            <span style="margin-left:auto; display:flex; gap:16px;"><svg class="i"><use href="#i-archive"/></svg><svg class="i"><use href="#i-trash"/></svg><svg class="i"><use href="#i-dots"/></svg></span></div>
+          <div class="msubj">Re: Invoice INV-2041 - July hosting</div>
+        </div>
+        <div class="mcard">
+          <div class="mfrom"><span class="av">EN</span><div><div class="fname">Emeka Nwosu</div>
+            <div class="fmail">emeka@lagosprint.com · to me</div></div><span class="mtime">09:14</span></div>
+          <div class="mbody">
+            <p>Good morning ma,</p>
+            <p>Please find the revised invoice attached. The July hosting figure now reflects the discount we agreed, and the VAT line has been corrected.</p>
+            <p>Kindly confirm receipt so we can close the month's books.</p>
+          </div>
+          <span class="attchip"><svg class="i sm"><use href="#i-attach"/></svg>Invoice-2041.pdf<span>240 KB</span></span>
+        </div>
+        <div class="actionbar">
+          <span class="act primary"><svg class="i sm"><use href="#i-reply"/></svg>Reply</span>
+          <span class="act"><svg class="i sm"><use href="#i-replyall"/></svg>Reply all</span>
+          <span class="act"><svg class="i sm"><use href="#i-forward"/></svg>Forward</span>
+        </div>
+      </div></div>
+      <div class="pickrow"><input type="radio" id="read-B" name="sel-read" data-screen="read" value="B"><label for="read-B">Pick B for this screen</label></div>
+    </div>
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#C4552D"></span><b>C</b><span>Sunbird</span></div>
+      <div class="phone dC"><div class="screen">
+        <div class="sb"><span>9:41</span><span>▮▮▮</span></div>
+        <div class="chead"><svg class="i"><use href="#i-back"/></svg>
+          <span style="margin-left:auto; display:flex; gap:16px; color:var(--dim);"><svg class="i"><use href="#i-star"/></svg><svg class="i"><use href="#i-trash"/></svg><svg class="i"><use href="#i-dots"/></svg></span></div>
+        <div class="body" style="overflow:auto"><div class="msg">
+          <div class="msubj">Re: Invoice INV-2041 - July hosting</div>
+          <div class="mcard">
+            <div class="mfrom"><span class="av">EN</span><div><div class="fname">Emeka Nwosu</div>
+              <div class="fmail">emeka@lagosprint.com</div></div><span class="mtime">09:14</span></div>
+            <div class="mbody">
+              <p>Good morning ma,</p>
+              <p>Please find the revised invoice attached. The July hosting figure now reflects the discount we agreed, and the VAT line has been corrected.</p>
+              <p>Kindly confirm receipt so we can close the month's books. 🙏</p>
+            </div>
+            <span class="attchip"><svg class="i sm"><use href="#i-attach"/></svg>Invoice-2041.pdf<span>240 KB</span></span>
+            <div class="actionbar">
+              <span class="act primary"><svg class="i sm"><use href="#i-reply"/></svg>Reply</span>
+              <span class="act"><svg class="i sm"><use href="#i-replyall"/></svg>All</span>
+              <span class="act"><svg class="i sm"><use href="#i-forward"/></svg>Fwd</span>
+            </div>
+          </div>
+        </div></div>
+      </div></div>
+      <div class="pickrow"><input type="radio" id="read-C" name="sel-read" data-screen="read" value="C"><label for="read-C">Pick C for this screen</label></div>
+    </div>
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#0B6E4F"></span><b>D</b><span>Ledger</span></div>
+      <div class="phone dD"><div class="msg">
+        <div class="sb"><span>9:41</span><span>▮▮▮</span></div>
+        <div class="mtool"><svg class="i"><use href="#i-back"/></svg>
+          <span class="sp"><svg class="i"><use href="#i-archive"/></svg><svg class="i"><use href="#i-junk"/></svg><svg class="i"><use href="#i-trash"/></svg><svg class="i"><use href="#i-dots"/></svg></span></div>
+        <div class="msubj">Re: Invoice INV-2041 - July hosting</div>
+        <div class="mmeta"><b>Emeka Nwosu</b> &lt;emeka@lagosprint.com&gt;<br>
+          to <b>ada@okafortrading.ng</b> · Thu 7 Aug, 09:14</div>
+        <div class="mbody">
+          <p>Good morning ma,</p>
+          <p>Please find the revised invoice attached. The July hosting figure now reflects the discount we agreed, and the VAT line has been corrected.</p>
+          <p>Kindly confirm receipt so we can close the month's books.</p>
+          <p>Warm regards,<br>Emeka</p>
+        </div>
+        <div class="attrow"><span class="attcell"><svg class="i sm"><use href="#i-attach"/></svg>Invoice-2041.pdf <span>240 KB</span></span></div>
+        <div class="actionbar">
+          <span class="act primary"><svg class="i sm"><use href="#i-reply"/></svg>Reply</span>
+          <span class="act">All</span>
+          <span class="act">Forward</span>
+        </div>
+      </div></div>
+      <div class="pickrow"><input type="radio" id="read-D" name="sel-read" data-screen="read" value="D"><label for="read-D">Pick D for this screen</label></div>
+    </div>
+
+  </div>
+  <div class="screen-note"><input type="text" data-note="read" placeholder="Notes on the reading screen (optional)"></div>
+</section>
+
+<!-- ================= SCREEN 5 - REPLYING ================= -->
+<section class="block" data-screen-section="reply">
+  <h2>5 - Replying <small>four different metaphors: inline card, bottom sheet, chat thread, split pane</small></h2>
+  <div class="phones">
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#1D5C45"></span><b>A</b><span>Ivory Post - inline card</span></div>
+      <div class="phone dA"><div class="screen">
+        <div class="sb"><span>9:41</span><span>▮▮▮</span></div>
+        <div class="appbar"><svg class="i"><use href="#i-back"/></svg></div>
+        <div class="body" style="overflow:auto">
+          <div class="msg" style="padding-bottom:0">
+            <div class="msubj" style="font-size:17px">Re: Invoice INV-2041 - July hosting</div>
+            <div class="mfrom"><span class="aav">E</span><div><div class="fname">Emeka Nwosu</div>
+              <div class="fmail">emeka@lagosprint.com</div></div><span class="mtime">09:14</span></div>
+          </div>
+          <div class="replyinline">
+            <div class="rto">Replying to <b>Emeka Nwosu</b></div>
+            <div class="rtext">Received with thanks, Emeka. Payment goes out this afternoon - I will send the transfer advice once done.</div>
+            <div class="quote">On Thu 7 Aug, Emeka Nwosu wrote:<br>Good morning ma, please find the revised invoice attached…</div>
+            <div class="rsendrow">
+              <svg class="i sm"><use href="#i-attach"/></svg>
+              <span style="font-weight:700; font-size:14px; margin-right:10px;">B</span>
+              <span style="font-style:italic; font-size:14px;">I</span>
+              <span class="sendbtn"><svg class="i sm"><use href="#i-send"/></svg>Send</span>
+            </div>
+          </div>
+        </div>
+      </div></div>
+      <div class="pickrow"><input type="radio" id="reply-A" name="sel-reply" data-screen="reply" value="A"><label for="reply-A">Pick A for this screen</label></div>
+    </div>
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#C8F55B"></span><b>B</b><span>Signal - bottom sheet</span></div>
+      <div class="phone dB"><div class="msgwrap">
+        <div class="sb"><span>9:41</span><span>▮▮▮</span></div>
+        <div class="mhead">
+          <div class="mtop"><svg class="i"><use href="#i-back"/></svg></div>
+          <div class="msubj">Re: Invoice INV-2041 - July hosting</div>
+        </div>
+        <div class="mcard" style="opacity:.55">
+          <div class="mfrom"><span class="av">EN</span><div><div class="fname">Emeka Nwosu</div>
+            <div class="fmail">emeka@lagosprint.com</div></div></div>
+          <div class="mbody"><p>Good morning ma, please find the revised invoice attached…</p></div>
+        </div>
+        <div class="sheetdim"></div>
+        <div class="sheet">
+          <div class="grab"></div>
+          <div class="shto">Reply to <span class="pill">Emeka Nwosu</span><b style="margin-left:auto">↕ expand</b></div>
+          <div class="rtext">Received with thanks, Emeka. Payment goes out this afternoon - transfer advice to follow.</div>
+          <div class="shbar">
+            <svg class="i sm"><use href="#i-attach"/></svg>
+            <span style="font-weight:800;">B</span><span style="font-style:italic;">I</span><span style="text-decoration:underline;">U</span>
+            <span class="sendbtn"><svg class="i sm"><use href="#i-send"/></svg>Send</span>
+          </div>
+        </div>
+      </div></div>
+      <div class="pickrow"><input type="radio" id="reply-B" name="sel-reply" data-screen="reply" value="B"><label for="reply-B">Pick B for this screen</label></div>
+    </div>
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#C4552D"></span><b>C</b><span>Sunbird - chat thread</span></div>
+      <div class="phone dC"><div class="screen">
+        <div class="sb"><span>9:41</span><span>▮▮▮</span></div>
+        <div class="chead"><svg class="i"><use href="#i-back"/></svg>
+          <div><div class="ct" style="font-size:15px">Emeka Nwosu</div>
+          <div style="font-size:11.5px;color:var(--dim)">Invoice INV-2041 · 3 messages</div></div>
+          <svg class="i" style="margin-left:auto"><use href="#i-dots"/></svg></div>
+        <div class="body" style="overflow:auto; padding-bottom:80px;">
+          <div class="thread">
+            <div class="bubble"><div class="bwho">Emeka · Tue</div>
+              <div class="btext">Sending the July invoice today ma.</div><div class="btime">14:02</div></div>
+            <div class="bubble me"><div class="bwho">You</div>
+              <div class="btext">Please apply the discount we discussed first.</div><div class="btime">15:11</div></div>
+            <div class="bubble"><div class="bwho">Emeka · Today</div>
+              <div class="btext">Revised invoice attached - discount applied, VAT corrected. Kindly confirm receipt. 📎 Invoice-2041.pdf</div>
+              <div class="btime">09:14</div></div>
+          </div>
+        </div>
+        <div class="replydock">Reply to Emeka…<span class="sendfab"><svg class="i sm"><use href="#i-send"/></svg></span></div>
+      </div></div>
+      <div class="pickrow"><input type="radio" id="reply-C" name="sel-reply" data-screen="reply" value="C"><label for="reply-C">Pick C for this screen</label></div>
+    </div>
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#0B6E4F"></span><b>D</b><span>Ledger - split pane</span></div>
+      <div class="phone dD"><div class="msg">
+        <div class="sb"><span>9:41</span><span>▮▮▮</span></div>
+        <div class="mtool"><svg class="i"><use href="#i-back"/></svg>
+          <span class="sp"><svg class="i"><use href="#i-dots"/></svg></span></div>
+        <div class="msubj" style="font-size:15px">Re: Invoice INV-2041 - July hosting</div>
+        <div class="mmeta"><b>Emeka Nwosu</b> · 09:14</div>
+        <div class="mbody" style="font-size:13px">
+          <p>Good morning ma,</p>
+          <p>Please find the revised invoice attached. The July hosting figure now reflects the discount we agreed…</p>
+        </div>
+        <div class="rpane">
+          <div class="rlab">Your reply</div>
+          <div class="rto">To <b>emeka@lagosprint.com</b></div>
+          <div class="rtext">Received with thanks. Payment goes out this afternoon - transfer advice to follow.</div>
+          <div class="rbar">
+            <svg class="i sm"><use href="#i-attach"/></svg>
+            <span style="font-weight:800;">B</span><span style="font-style:italic;">I</span>
+            <span class="sendbtn"><svg class="i sm"><use href="#i-send"/></svg>Send</span>
+          </div>
+        </div>
+      </div></div>
+      <div class="pickrow"><input type="radio" id="reply-D" name="sel-reply" data-screen="reply" value="D"><label for="reply-D">Pick D for this screen</label></div>
+    </div>
+
+  </div>
+  <div class="screen-note"><input type="text" data-note="reply" placeholder="Notes on replying (optional)"></div>
+</section>
+
+<!-- ================= SCREEN 6 - COMPOSE ================= -->
+<section class="block" data-screen-section="compose">
+  <h2>6 - Compose <small>new message with recipients, subject, rich text formatting, attachments</small></h2>
+  <div class="phones">
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#1D5C45"></span><b>A</b><span>Ivory Post</span></div>
+      <div class="phone dA"><div class="screen">
+        <div class="sb"><span>9:41</span><span>▮▮▮</span></div>
+        <div class="appbar"><svg class="i"><use href="#i-x"/></svg><span class="disp" style="font-weight:600; font-size:18px;">New letter</span>
+          <span class="folder-ind"><span class="sendbtn" style="display:flex;align-items:center;gap:7px;background:var(--acc);color:var(--accink);padding:9px 16px;border-radius:10px;font-weight:600;font-size:13px;"><svg class="i xs"><use href="#i-send"/></svg>Send</span></span></div>
+        <div class="cform">
+          <div class="cfield"><span class="lab">To</span><span class="val"><b>Emeka Nwosu</b></span><span class="cc">Cc / Bcc</span></div>
+          <div class="cfield"><span class="lab">Subject</span><span class="csubject">Payment confirmation - INV-2041</span></div>
+          <div class="cbody">Dear Emeka,<br><br>The transfer went out at 2:15pm today from our GTBank account. Kindly confirm once it reflects<span class="cursor"></span></div>
+          <div class="fmtbar"><b>B</b><i>I</i><u>U</u><span style="font-size:13px;">A︎⌄</span>
+            <svg class="i sm" style="margin-left:auto"><use href="#i-attach"/></svg></div>
+        </div>
+      </div></div>
+      <div class="pickrow"><input type="radio" id="compose-A" name="sel-compose" data-screen="compose" value="A"><label for="compose-A">Pick A for this screen</label></div>
+    </div>
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#C8F55B"></span><b>B</b><span>Signal</span></div>
+      <div class="phone dB"><div class="cwrap">
+        <div class="sb"><span>9:41</span><span>▮▮▮</span></div>
+        <div class="chead"><svg class="i"><use href="#i-x"/></svg><span class="ct">New message</span>
+          <span class="sendbtn"><svg class="i xs"><use href="#i-send"/></svg>Send</span></div>
+        <div class="ccard">
+          <div class="cfield"><span class="lab">To</span><span class="chiprec">Emeka Nwosu ✕</span><span class="cc">+ Cc</span></div>
+          <div class="cfield"><span class="lab">Subject</span><span class="csubject">Payment confirmation - INV-2041</span></div>
+          <div class="cbody">Dear Emeka,<br><br>The transfer went out at 2:15pm today from our GTBank account. Kindly confirm once it reflects.</div>
+          <div class="fmtbar"><b>B</b><i style="font-style:italic">I</i><u>U</u><span>Aa</span>
+            <svg class="i sm" style="margin-left:auto"><use href="#i-attach"/></svg>
+            <svg class="i sm"><use href="#i-dots"/></svg></div>
+        </div>
+      </div></div>
+      <div class="pickrow"><input type="radio" id="compose-B" name="sel-compose" data-screen="compose" value="B"><label for="compose-B">Pick B for this screen</label></div>
+    </div>
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#C4552D"></span><b>C</b><span>Sunbird</span></div>
+      <div class="phone dC"><div class="cwrap">
+        <div class="sb"><span>9:41</span><span>▮▮▮</span></div>
+        <div class="chead"><svg class="i"><use href="#i-x"/></svg><span class="ct">Write ✍️</span>
+          <span class="sendbtn"><svg class="i xs"><use href="#i-send"/></svg>Send</span></div>
+        <div class="ccard">
+          <div class="cfield"><span class="lab">To</span><span class="chiprec">Emeka Nwosu ✕</span><span class="cc">+ Cc</span></div>
+          <div class="cfield"><span class="lab">Subject</span><span class="csubject">Payment confirmation - INV-2041</span></div>
+          <div class="cbody">Dear Emeka,<br><br>The transfer went out at 2:15pm today from our GTBank account. Kindly confirm once it reflects. 🙏</div>
+          <div class="fmtbar"><b>B</b><i style="font-style:italic">I</i><u>U</u><span>😊</span>
+            <svg class="i sm" style="margin-left:auto"><use href="#i-attach"/></svg>
+            <svg class="i sm"><use href="#i-mail"/></svg></div>
+        </div>
+      </div></div>
+      <div class="pickrow"><input type="radio" id="compose-C" name="sel-compose" data-screen="compose" value="C"><label for="compose-C">Pick C for this screen</label></div>
+    </div>
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#0B6E4F"></span><b>D</b><span>Ledger</span></div>
+      <div class="phone dD"><div class="cwrap">
+        <div class="sb"><span>9:41</span><span>▮▮▮</span></div>
+        <div class="chead"><svg class="i"><use href="#i-x"/></svg><span class="ct">Compose</span>
+          <span class="sendbtn"><svg class="i xs"><use href="#i-send"/></svg>Send</span></div>
+        <div class="cfield"><span class="lab">From</span><span class="val">ada@okafortrading.ng</span><span class="cc">change</span></div>
+        <div class="cfield"><span class="lab">To</span><span class="val"><b>emeka@lagosprint.com</b></span><span class="cc">+ Cc/Bcc</span></div>
+        <div class="cfield"><span class="lab">Subject</span><span class="csubject">Payment confirmation - INV-2041</span></div>
+        <div class="cbody">Dear Emeka,<br><br>The transfer went out at 2:15pm today from our GTBank account. Kindly confirm once it reflects.</div>
+        <div class="fmtbar"><span class="on"><b>B</b></span><span><i style="font-style:italic">I</i></span><span><u>U</u></span><span>Aa</span><span><svg class="i sm" style="vertical-align:-4px"><use href="#i-attach"/></svg></span></div>
+      </div></div>
+      <div class="pickrow"><input type="radio" id="compose-D" name="sel-compose" data-screen="compose" value="D"><label for="compose-D">Pick D for this screen</label></div>
+    </div>
+
+  </div>
+  <div class="screen-note"><input type="text" data-note="compose" placeholder="Notes on compose (optional)"></div>
+</section>
+
+<!-- ================= SCREEN 7 - SEARCH ================= -->
+<section class="block" data-screen-section="search">
+  <h2>7 - Search <small>finding that one invoice from months ago</small></h2>
+  <div class="phones">
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#1D5C45"></span><b>A</b><span>Ivory Post</span></div>
+      <div class="phone dA"><div class="screen">
+        <div class="sb"><span>9:41</span><span>▮▮▮</span></div>
+        <div class="appbar"><svg class="i"><use href="#i-back"/></svg>
+          <span class="disp" style="font-weight:600; font-size:20px;">invoice<span style="color:var(--acc)">|</span></span></div>
+        <div class="fchips"><span class="fc on">All mail</span><span class="fc">Unread</span><span class="fc">Has attachment</span><span class="fc">This month</span></div>
+        <div class="body"><div class="glabel">People</div>
+          <div class="list" style="padding-top:0">
+            <div class="row"><div class="rtop"><span class="sender">Emeka Nwosu</span></div>
+              <div class="rprev">emeka@lagosprint.com · 14 messages</div></div>
+          </div>
+          <div class="glabel">Messages</div>
+          <div class="list" style="padding-top:0">
+            <div class="row"><div class="rtop"><span class="sender">Emeka Nwosu</span><span class="time">09:14</span></div>
+              <div class="rsub">Re: <mark style="background:#EFE3C4">Invoice</mark> INV-2041 - July hosting</div></div>
+            <div class="row"><div class="rtop"><span class="sender">Ngozi - Accounts</span><span class="time">Jul 28</span></div>
+              <div class="rsub"><mark style="background:#EFE3C4">Invoice</mark> batch for signing</div></div>
+            <div class="row"><div class="rtop"><span class="sender">Paystack</span><span class="time">Jul 12</span></div>
+              <div class="rsub">Your <mark style="background:#EFE3C4">invoice</mark> settled</div></div>
+          </div>
+        </div>
+      </div></div>
+      <div class="pickrow"><input type="radio" id="search-A" name="sel-search" data-screen="search" value="A"><label for="search-A">Pick A for this screen</label></div>
+    </div>
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#C8F55B"></span><b>B</b><span>Signal</span></div>
+      <div class="phone dB"><div class="screen">
+        <div class="sb"><span>9:41</span><span>▮▮▮</span></div>
+        <div class="appbar"><div class="abtop"><svg class="i"><use href="#i-back"/></svg>
+          <div class="search" style="margin-top:0; flex:1;"><svg class="i sm"><use href="#i-search"/></svg>invoice|</div></div></div>
+        <div class="fchips"><span class="fc on">All</span><span class="fc">Unread</span><span class="fc">📎 Files</span><span class="fc">From Emeka</span></div>
+        <div class="body"><div class="glabel">Top hit</div>
+          <div class="list">
+            <div class="row unread"><span class="av">EN</span><div class="rmain">
+              <div class="rtop"><span class="sender">Emeka Nwosu</span><span class="time">09:14</span></div>
+              <div class="rsub">Re: Invoice INV-2041 - July hosting</div>
+              <div class="rbadges"><span class="bdg lime">BEST MATCH</span><span class="bdg">PDF</span></div></div></div>
+          </div>
+          <div class="glabel">Everything else</div>
+          <div class="list">
+            <div class="row"><span class="av">N</span><div class="rmain">
+              <div class="rtop"><span class="sender">Ngozi - Accounts</span><span class="time">Jul 28</span></div>
+              <div class="rsub">Invoice batch for signing</div></div></div>
+            <div class="row"><span class="av">P</span><div class="rmain">
+              <div class="rtop"><span class="sender">Paystack</span><span class="time">Jul 12</span></div>
+              <div class="rsub">Your invoice settled</div></div></div>
+          </div>
+        </div>
+      </div></div>
+      <div class="pickrow"><input type="radio" id="search-B" name="sel-search" data-screen="search" value="B"><label for="search-B">Pick B for this screen</label></div>
+    </div>
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#C4552D"></span><b>C</b><span>Sunbird</span></div>
+      <div class="phone dC"><div class="screen">
+        <div class="sb"><span>9:41</span><span>▮▮▮</span></div>
+        <div class="appbar"><div class="abtop"><svg class="i"><use href="#i-back"/></svg>
+          <div class="search" style="margin:0; flex:1;"><svg class="i sm"><use href="#i-search"/></svg>invoice|</div></div></div>
+        <div class="fchips"><span class="fc on">Everything</span><span class="fc">People</span><span class="fc">With files</span><span class="fc">Recent</span></div>
+        <div class="body">
+          <div class="glabel">People</div>
+          <div style="display:flex; gap:14px; padding:8px 20px;">
+            <div style="text-align:center;"><span class="av t" style="width:48px;height:48px;border-radius:50%;color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;background:var(--terra);">EN</span>
+              <div style="font-size:11px; font-weight:700; margin-top:5px;">Emeka</div></div>
+            <div style="text-align:center;"><span class="av n" style="width:48px;height:48px;border-radius:50%;color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;background:var(--indigo);">NA</span>
+              <div style="font-size:11px; font-weight:700; margin-top:5px;">Ngozi</div></div>
+          </div>
+          <div class="glabel">Messages</div>
+          <div class="list">
+            <div class="row"><span class="av t">EN</span><div class="rmain">
+              <div class="rtop"><span class="sender">Emeka Nwosu</span><span class="time">09:14</span></div>
+              <div class="rsub">Re: Invoice INV-2041 - July hosting</div>
+              <span class="attpill"><svg class="i xs"><use href="#i-attach"/></svg>PDF</span></div></div>
+            <div class="row"><span class="av n">NA</span><div class="rmain">
+              <div class="rtop"><span class="sender">Ngozi - Accounts</span><span class="time">Jul 28</span></div>
+              <div class="rsub">Invoice batch for signing</div></div></div>
+          </div>
+        </div>
+      </div></div>
+      <div class="pickrow"><input type="radio" id="search-C" name="sel-search" data-screen="search" value="C"><label for="search-C">Pick C for this screen</label></div>
+    </div>
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#0B6E4F"></span><b>D</b><span>Ledger</span></div>
+      <div class="phone dD"><div class="screen">
+        <div class="sb"><span>9:41</span><span>▮▮▮</span></div>
+        <div class="appbar"><svg class="i"><use href="#i-back"/></svg><span class="ttl" style="text-transform:none; letter-spacing:0;">invoice|</span>
+          <span class="icons"><svg class="i"><use href="#i-x"/></svg></span></div>
+        <div class="fchips"><span class="fc on">All</span><span class="fc">Unread</span><span class="fc">Files</span><span class="fc">Sender</span><span class="fc">Date</span></div>
+        <div class="glabel">23 results · newest first</div>
+        <div class="body"><div class="list">
+          <div class="row unread"><span class="no">01</span><div class="rmain">
+            <div class="rtop"><span class="sender">Emeka Nwosu</span><span class="time">09:14</span></div>
+            <div class="rsub">Re: Invoice INV-2041 - July hosting</div>
+            <div class="rflags"><span class="tag a">PDF</span><span>inbox</span></div></div></div>
+          <div class="row"><span class="no">02</span><div class="rmain">
+            <div class="rtop"><span class="sender">Ngozi - Accounts</span><span class="time">28/07</span></div>
+            <div class="rsub">Invoice batch for signing</div>
+            <div class="rflags"><span>inbox</span></div></div></div>
+          <div class="row"><span class="no">03</span><div class="rmain">
+            <div class="rtop"><span class="sender">Paystack</span><span class="time">12/07</span></div>
+            <div class="rsub">Your invoice settled</div>
+            <div class="rflags"><span>archive</span></div></div></div>
+          <div class="row"><span class="no">04</span><div class="rmain">
+            <div class="rtop"><span class="sender">You → Emeka</span><span class="time">02/07</span></div>
+            <div class="rsub">June invoice approved</div>
+            <div class="rflags"><span>sent</span></div></div></div>
+        </div></div>
+      </div></div>
+      <div class="pickrow"><input type="radio" id="search-D" name="sel-search" data-screen="search" value="D"><label for="search-D">Pick D for this screen</label></div>
+    </div>
+
+  </div>
+  <div class="screen-note"><input type="text" data-note="search" placeholder="Notes on search (optional)"></div>
+</section>
+
+<!-- ================= SCREEN 8 - SETTINGS ================= -->
+<section class="block" data-screen-section="settings">
+  <h2>8 - Settings <small>theme, accounts, notifications, signature, updates</small></h2>
+  <div class="phones">
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#1D5C45"></span><b>A</b><span>Ivory Post</span></div>
+      <div class="phone dA"><div class="screen">
+        <div class="sb"><span>9:41</span><span>▮▮▮</span></div>
+        <div class="appbar"><svg class="i"><use href="#i-back"/></svg></div>
+        <div class="body" style="overflow:auto"><div class="set">
+          <div class="sethead">Settings</div>
+          <div class="seg"><span class="on">Light</span><span>Dark</span><span>Auto</span></div>
+          <div class="srow"><svg class="i sm"><use href="#i-user"/></svg><div><div class="st">Accounts</div>
+            <div class="ss">ada@okafortrading.ng + 1 more</div></div><svg class="i sm" style="margin-left:auto; color:var(--dim)"><use href="#i-chev"/></svg></div>
+          <div class="srow"><svg class="i sm"><use href="#i-bell"/></svg><div><div class="st">New mail alerts</div>
+            <div class="ss">Checks every 15 minutes</div></div><span class="tgl on"></span></div>
+          <div class="srow"><svg class="i sm"><use href="#i-pen"/></svg><div><div class="st">Signature</div>
+            <div class="ss">Warm regards, Adaeze - Okafor Trading</div></div><svg class="i sm" style="margin-left:auto; color:var(--dim)"><use href="#i-chev"/></svg></div>
+          <div class="srow"><svg class="i sm"><use href="#i-mail"/></svg><div><div class="st">Check for updates</div>
+            <div class="ss">Version 0.2.0</div></div></div>
+        </div></div>
+      </div></div>
+      <div class="pickrow"><input type="radio" id="settings-A" name="sel-settings" data-screen="settings" value="A"><label for="settings-A">Pick A for this screen</label></div>
+    </div>
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#C8F55B"></span><b>B</b><span>Signal</span></div>
+      <div class="phone dB"><div class="screen">
+        <div class="sb"><span>9:41</span><span>▮▮▮</span></div>
+        <div class="appbar"><div class="abtop"><svg class="i"><use href="#i-back"/></svg>
+          <span class="logo" style="font-size:18px;">Settings</span></div></div>
+        <div class="body" style="overflow:auto; padding-top:12px;"><div class="set">
+          <div class="scard">
+            <div class="srow"><span class="ic"><svg class="i sm"><use href="#i-swatch"/></svg></span><div><div class="st">Theme</div>
+              <div class="ss">Light · dark mode available</div></div><span class="tgl"></span></div>
+            <div class="srow"><span class="ic"><svg class="i sm"><use href="#i-bell"/></svg></span><div><div class="st">Notifications</div>
+              <div class="ss">Instant via Ranse push</div></div><span class="tgl on"></span></div>
+          </div>
+          <div class="scard">
+            <div class="srow"><span class="ic"><svg class="i sm"><use href="#i-user"/></svg></span><div><div class="st">Accounts</div>
+              <div class="ss">2 connected</div></div><svg class="i sm" style="margin-left:auto; color:var(--dim)"><use href="#i-chev"/></svg></div>
+            <div class="srow"><span class="ic"><svg class="i sm"><use href="#i-pen"/></svg></span><div><div class="st">Signature</div>
+              <div class="ss">On - "Warm regards, Adaeze"</div></div><svg class="i sm" style="margin-left:auto; color:var(--dim)"><use href="#i-chev"/></svg></div>
+          </div>
+          <div class="scard">
+            <div class="srow"><span class="ic"><svg class="i sm"><use href="#i-mail"/></svg></span><div><div class="st">Updates</div>
+              <div class="ss">0.2.0 - up to date</div></div></div>
+          </div>
+        </div></div>
+      </div></div>
+      <div class="pickrow"><input type="radio" id="settings-B" name="sel-settings" data-screen="settings" value="B"><label for="settings-B">Pick B for this screen</label></div>
+    </div>
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#C4552D"></span><b>C</b><span>Sunbird</span></div>
+      <div class="phone dC"><div class="screen">
+        <div class="sb"><span>9:41</span><span>▮▮▮</span></div>
+        <div class="chead"><svg class="i"><use href="#i-back"/></svg><span class="ct">Settings</span></div>
+        <div class="body" style="overflow:auto;"><div class="set">
+          <div class="acard" style="margin:4px 0 14px;"><span class="aav">AO</span>
+            <div><div class="aname">Adaeze Okafor</div><div class="amail">2 mailboxes connected</div></div>
+            <svg class="i sm"><use href="#i-chev"/></svg></div>
+          <div class="scard">
+            <div class="srow"><span class="ic"><svg class="i sm"><use href="#i-swatch"/></svg></span><div><div class="st">Appearance</div>
+              <div class="ss">Light · switches with your phone</div></div><svg class="i sm" style="margin-left:auto;color:var(--dim)"><use href="#i-chev"/></svg></div>
+            <div class="srow"><span class="ic"><svg class="i sm"><use href="#i-bell"/></svg></span><div><div class="st">Alerts</div>
+              <div class="ss">On for both mailboxes</div></div><span class="tgl on"></span></div>
+            <div class="srow"><span class="ic"><svg class="i sm"><use href="#i-pen"/></svg></span><div><div class="st">Signature</div>
+              <div class="ss">Warm regards, Adaeze 🌼</div></div><svg class="i sm" style="margin-left:auto;color:var(--dim)"><use href="#i-chev"/></svg></div>
+          </div>
+        </div></div>
+      </div></div>
+      <div class="pickrow"><input type="radio" id="settings-C" name="sel-settings" data-screen="settings" value="C"><label for="settings-C">Pick C for this screen</label></div>
+    </div>
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#0B6E4F"></span><b>D</b><span>Ledger</span></div>
+      <div class="phone dD"><div class="screen">
+        <div class="sb"><span>9:41</span><span>▮▮▮</span></div>
+        <div class="appbar"><svg class="i"><use href="#i-back"/></svg><span class="ttl">Settings</span></div>
+        <div class="body" style="overflow:auto"><div class="set">
+          <div class="setlab">Appearance</div>
+          <div class="srow"><svg class="i sm"><use href="#i-swatch"/></svg><div><div class="st">Theme</div>
+            <div class="ss">Light / Dark / Follow system</div></div><span class="tgl"></span></div>
+          <div class="setlab">Mail</div>
+          <div class="srow"><svg class="i sm"><use href="#i-user"/></svg><div><div class="st">Accounts</div>
+            <div class="ss">3 configured</div></div><svg class="i sm" style="margin-left:auto"><use href="#i-chev"/></svg></div>
+          <div class="srow"><svg class="i sm"><use href="#i-bell"/></svg><div><div class="st">Notifications</div>
+            <div class="ss">Poll: 15 min</div></div><span class="tgl on"></span></div>
+          <div class="srow"><svg class="i sm"><use href="#i-pen"/></svg><div><div class="st">Signature</div>
+            <div class="ss">Set per account</div></div><svg class="i sm" style="margin-left:auto"><use href="#i-chev"/></svg></div>
+          <div class="setlab">System</div>
+          <div class="srow"><svg class="i sm"><use href="#i-mail"/></svg><div><div class="st">Updates</div>
+            <div class="ss">v0.2.0 · check now</div></div></div>
+        </div></div>
+      </div></div>
+      <div class="pickrow"><input type="radio" id="settings-D" name="sel-settings" data-screen="settings" value="D"><label for="settings-D">Pick D for this screen</label></div>
+    </div>
+
+  </div>
+  <div class="screen-note"><input type="text" data-note="settings" placeholder="Notes on settings (optional)"></div>
+</section>
+
+<!-- ================= SCREEN 9 - SELECTING MAIL ================= -->
+<section class="block" data-screen-section="actions">
+  <h2>9 - Selecting mail <small>long-press to select several, then archive / junk / delete in one go</small></h2>
+  <div class="phones">
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#1D5C45"></span><b>A</b><span>Ivory Post</span></div>
+      <div class="phone dA"><div class="screen">
+        <div class="sb" style="background:var(--acc); color:var(--accink)"><span>9:41</span><span>▮▮▮</span></div>
+        <div class="selbar"><b>2 selected</b>
+          <svg class="i sm"><use href="#i-archive"/></svg><svg class="i sm"><use href="#i-junk"/></svg>
+          <svg class="i sm"><use href="#i-trash"/></svg><svg class="i sm"><use href="#i-x"/></svg></div>
+        <div class="body"><div>
+          <div class="rowsel on"><span class="cb on"></span><div class="rw">
+            <div class="rtop"><span class="sender">Emeka Nwosu</span><span class="time">09:14</span></div>
+            <div class="rsub">Re: Invoice INV-2041 - July hosting</div></div></div>
+          <div class="rowsel on"><span class="cb on"></span><div class="rw">
+            <div class="rtop"><span class="sender">Jumia Business</span><span class="time">Tue</span></div>
+            <div class="rsub">Order JB-2211 confirmed</div></div></div>
+          <div class="rowsel"><span class="cb"></span><div class="rw">
+            <div class="rtop"><span class="sender">Chief Bamidele</span><span class="time">08:10</span></div>
+            <div class="rsub">Board meeting moved to Thursday</div></div></div>
+          <div class="rowsel"><span class="cb"></span><div class="rw">
+            <div class="rtop"><span class="sender">DHL Nigeria</span><span class="time">Yest</span></div>
+            <div class="rsub">Shipment 8843 out for delivery</div></div></div>
+        </div></div>
+      </div></div>
+      <div class="pickrow"><input type="radio" id="actions-A" name="sel-actions" data-screen="actions" value="A"><label for="actions-A">Pick A for this screen</label></div>
+    </div>
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#C8F55B"></span><b>B</b><span>Signal</span></div>
+      <div class="phone dB"><div class="screen">
+        <div class="sb"><span>9:41</span><span>▮▮▮</span></div>
+        <div class="selhead"><b>2 selected</b>
+          <svg class="i"><use href="#i-archive"/></svg><svg class="i"><use href="#i-junk"/></svg>
+          <svg class="i"><use href="#i-trash"/></svg><svg class="i"><use href="#i-x"/></svg></div>
+        <div class="body" style="padding-top:12px;">
+          <div class="rowsel on"><span class="cb on"></span><div class="rw">
+            <div class="rtop"><span class="sender">Emeka Nwosu</span><span class="time">09:14</span></div>
+            <div class="rsub">Re: Invoice INV-2041 - July hosting</div></div></div>
+          <div class="rowsel on"><span class="cb on"></span><div class="rw">
+            <div class="rtop"><span class="sender">Jumia Business</span><span class="time">Tue</span></div>
+            <div class="rsub">Order JB-2211 confirmed</div></div></div>
+          <div class="rowsel"><span class="cb"></span><div class="rw">
+            <div class="rtop"><span class="sender">Chief Bamidele</span><span class="time">08:10</span></div>
+            <div class="rsub">Board meeting moved to Thursday</div></div></div>
+          <div class="rowsel"><span class="cb"></span><div class="rw">
+            <div class="rtop"><span class="sender">DHL Nigeria</span><span class="time">Yest</span></div>
+            <div class="rsub">Shipment 8843 out for delivery</div></div></div>
+        </div>
+      </div></div>
+      <div class="pickrow"><input type="radio" id="actions-B" name="sel-actions" data-screen="actions" value="B"><label for="actions-B">Pick B for this screen</label></div>
+    </div>
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#C4552D"></span><b>C</b><span>Sunbird</span></div>
+      <div class="phone dC"><div class="screen">
+        <div class="sb"><span>9:41</span><span>▮▮▮</span></div>
+        <div class="selhead"><b>2 picked</b>
+          <svg class="i"><use href="#i-archive"/></svg><svg class="i"><use href="#i-junk"/></svg>
+          <svg class="i"><use href="#i-trash"/></svg><svg class="i"><use href="#i-x"/></svg></div>
+        <div class="body">
+          <div class="rowsel on"><span class="cb on"></span><div class="rw">
+            <div class="rtop"><span class="sender">Emeka Nwosu</span><span class="time">09:14</span></div>
+            <div class="rsub">Re: Invoice INV-2041 - July hosting</div></div></div>
+          <div class="rowsel on"><span class="cb on"></span><div class="rw">
+            <div class="rtop"><span class="sender">Jumia Business</span><span class="time">Tue</span></div>
+            <div class="rsub">Order JB-2211 confirmed</div></div></div>
+          <div class="rowsel"><span class="cb"></span><div class="rw">
+            <div class="rtop"><span class="sender">Chief Bamidele</span><span class="time">08:10</span></div>
+            <div class="rsub">Board meeting moved to Thursday</div></div></div>
+          <div class="rowsel"><span class="cb"></span><div class="rw">
+            <div class="rtop"><span class="sender">DHL Nigeria</span><span class="time">Yest</span></div>
+            <div class="rsub">Shipment 8843 out for delivery</div></div></div>
+        </div>
+      </div></div>
+      <div class="pickrow"><input type="radio" id="actions-C" name="sel-actions" data-screen="actions" value="C"><label for="actions-C">Pick C for this screen</label></div>
+    </div>
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#0B6E4F"></span><b>D</b><span>Ledger</span></div>
+      <div class="phone dD"><div class="screen">
+        <div class="sb"><span>9:41</span><span>▮▮▮</span></div>
+        <div class="selhead"><b>2 / 148 selected</b>
+          <svg class="i"><use href="#i-archive"/></svg><svg class="i"><use href="#i-junk"/></svg>
+          <svg class="i"><use href="#i-trash"/></svg><svg class="i"><use href="#i-x"/></svg></div>
+        <div class="body"><div class="list">
+          <div class="rowsel on"><span class="cb on"></span><div class="rw">
+            <div class="rtop"><span class="sender">Emeka Nwosu</span><span class="time">09:14</span></div>
+            <div class="rsub">Re: Invoice INV-2041 - July hosting</div></div></div>
+          <div class="rowsel on"><span class="cb on"></span><div class="rw">
+            <div class="rtop"><span class="sender">Jumia Business</span><span class="time">Tue</span></div>
+            <div class="rsub">Order JB-2211 confirmed</div></div></div>
+          <div class="rowsel"><span class="cb"></span><div class="rw">
+            <div class="rtop"><span class="sender">Chief Bamidele</span><span class="time">08:10</span></div>
+            <div class="rsub">Board meeting moved to Thursday</div></div></div>
+          <div class="rowsel"><span class="cb"></span><div class="rw">
+            <div class="rtop"><span class="sender">DHL Nigeria</span><span class="time">Yest</span></div>
+            <div class="rsub">Shipment 8843 out for delivery</div></div></div>
+          <div class="rowsel"><span class="cb"></span><div class="rw">
+            <div class="rtop"><span class="sender">Ngozi - Accounts</span><span class="time">Yest</span></div>
+            <div class="rsub">Q3 reconciliation attached</div></div></div>
+        </div></div>
+      </div></div>
+      <div class="pickrow"><input type="radio" id="actions-D" name="sel-actions" data-screen="actions" value="D"><label for="actions-D">Pick D for this screen</label></div>
+    </div>
+
+  </div>
+  <div class="screen-note"><input type="text" data-note="actions" placeholder="Notes on selecting mail (optional)"></div>
+</section>
+
+<!-- ================= SCREEN 10 - INBOX ZERO ================= -->
+<section class="block" data-screen-section="empty">
+  <h2>10 - Inbox zero <small>the reward moment - what an empty inbox says</small></h2>
+  <div class="phones">
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#1D5C45"></span><b>A</b><span>Ivory Post</span></div>
+      <div class="phone dA"><div class="screen">
+        <div class="sb"><span>9:41</span><span>▮▮▮</span></div>
+        <div class="appbar"><svg class="i"><use href="#i-menu"/></svg><span class="wordmark">Ranse</span></div>
+        <div class="body"><div class="empty">
+          <div class="eart">Fin.</div>
+          <div class="etitle">Every letter answered</div>
+          <div class="etext">Nothing waits for you here. New mail will announce itself.</div>
+        </div></div>
+      </div></div>
+      <div class="pickrow"><input type="radio" id="empty-A" name="sel-empty" data-screen="empty" value="A"><label for="empty-A">Pick A for this screen</label></div>
+    </div>
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#C8F55B"></span><b>B</b><span>Signal</span></div>
+      <div class="phone dB"><div class="screen">
+        <div class="sb"><span>9:41</span><span>▮▮▮</span></div>
+        <div class="appbar"><div class="abtop"><svg class="i"><use href="#i-menu"/></svg>
+          <span class="logo">Ranse<em>.</em></span><span class="av-me">AO</span></div></div>
+        <div class="body"><div class="empty">
+          <div class="eart">0</div>
+          <div class="etitle">Inbox zero. Nice.</div>
+          <div class="etext">You cleared everything. We'll ping you the second something lands.</div>
+          <div class="ebtn">Write something</div>
+        </div></div>
+      </div></div>
+      <div class="pickrow"><input type="radio" id="empty-B" name="sel-empty" data-screen="empty" value="B"><label for="empty-B">Pick B for this screen</label></div>
+    </div>
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#C4552D"></span><b>C</b><span>Sunbird</span></div>
+      <div class="phone dC"><div class="screen">
+        <div class="sb"><span>9:41</span><span>▮▮▮</span></div>
+        <div class="appbar"><div class="abtop"><div>
+          <div class="hello">Well done</div>
+          <div class="abname">All <span>clear!</span></div></div><span class="av-me">AO</span></div></div>
+        <div class="body"><div class="empty">
+          <div class="eart"><svg class="i"><use href="#i-check"/></svg></div>
+          <div class="etitle">You're all caught up 🎉</div>
+          <div class="etext">Take a breath. We'll let you know the moment new mail arrives.</div>
+          <div class="ebtn">Write a message</div>
+        </div></div>
+      </div></div>
+      <div class="pickrow"><input type="radio" id="empty-C" name="sel-empty" data-screen="empty" value="C"><label for="empty-C">Pick C for this screen</label></div>
+    </div>
+
+    <div class="candidate">
+      <div class="tag"><span class="dot" style="background:#0B6E4F"></span><b>D</b><span>Ledger</span></div>
+      <div class="phone dD"><div class="screen">
+        <div class="sb"><span>9:41</span><span>▮▮▮</span></div>
+        <div class="appbar"><svg class="i"><use href="#i-menu"/></svg><span class="ttl">Inbox</span>
+          <span class="cnt">0 / 148</span></div>
+        <div class="body"><div class="empty">
+          <div class="eart">0000</div>
+          <div class="etitle">Queue empty</div>
+          <div class="etext">148 processed. 0 pending. Last sync 09:41.</div>
+          <div class="ebtn">Compose</div>
+        </div></div>
+      </div></div>
+      <div class="pickrow"><input type="radio" id="empty-D" name="sel-empty" data-screen="empty" value="D"><label for="empty-D">Pick D for this screen</label></div>
+    </div>
+
+  </div>
+  <div class="screen-note"><input type="text" data-note="empty" placeholder="Notes on inbox zero (optional)"></div>
+</section>
+
+<!-- ================= OVERALL ================= -->
+<section class="block">
+  <h2>The verdict <small>after going through all ten screens</small></h2>
+  <div class="grid2">
+    <div class="q">
+      <label class="t">Which direction wins overall?</label>
+      <div class="chips">
+        <label><input type="radio" name="q-overall" data-q="overall" value="A">A - Ivory Post</label>
+        <label><input type="radio" name="q-overall" data-q="overall" value="B">B - Signal</label>
+        <label><input type="radio" name="q-overall" data-q="overall" value="C">C - Sunbird</label>
+        <label><input type="radio" name="q-overall" data-q="overall" value="D">D - Ledger</label>
+        <label><input type="radio" name="q-overall" data-q="overall" value="mix">Mix - my per-screen picks say it</label>
+      </div>
+    </div>
+    <div class="q full">
+      <label class="t">Anything else - what's missing, what to merge, what to change</label>
+      <textarea data-q="final_notes" placeholder="e.g. B's inbox but with C's colours; D's density everywhere; add swipe actions…"></textarea>
+    </div>
+  </div>
+</section>
+
+<div class="savebar">
+  <div class="inner">
+    <div class="progress" id="progress"></div>
+    <div class="status" id="savestatus">Not saved yet</div>
+    <button id="savebtn">Save selections</button>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</div>
+</body>
+</html>
