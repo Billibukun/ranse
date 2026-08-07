@@ -35,17 +35,20 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   enough_mail: ^2.1.7
-  flutter_secure_storage: ^11.0.0
+  flutter_secure_storage: ^10.0.0
   shared_preferences: ^2.5.5
   flutter_local_notifications: ^22.2.0
   workmanager: ^0.10.7
   http: ^1.6.0
-  package_info_plus: ^10.2.1
+  # package_info_plus 8.x / flutter_secure_storage 10.x keep the transitive
+  # win32 dep on ^5, matching file_picker 11 (all of them Windows-only code
+  # that never reaches the Android build).
+  package_info_plus: ^8.3.1
   open_filex: ^4.7.0
   flutter_widget_from_html_core: ^0.17.2
   path_provider: ^2.1.6
   intl: ^0.20.3
-  file_picker: ^3.0.4
+  file_picker: ^11.0.3
 
 dev_dependencies:
   flutter_test:

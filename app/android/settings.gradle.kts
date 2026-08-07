@@ -19,8 +19,11 @@ pluginManagement {
 
 plugins {
     id("dev.flutter.flutter-plugin-loader") version "1.0.0"
-    id("com.android.application") version "9.0.1" apply false
-    id("org.jetbrains.kotlin.android") version "2.3.20" apply false
+    // AGP 8.x: file_picker, package_info_plus, and workmanager_android still
+    // apply the legacy Kotlin Gradle Plugin, whose classes an AGP 9 build
+    // silently drops from the app classpath.
+    id("com.android.application") version "8.9.1" apply false
+    id("org.jetbrains.kotlin.android") version "2.1.20" apply false
 }
 
 include(":app")

@@ -70,7 +70,7 @@ class _ComposeScreenState extends State<ComposeScreen> {
   }
 
   Future<void> _pickAttachment() async {
-    final result = await FilePicker.platform.pickFiles(allowMultiple: true);
+    final result = await FilePicker.pickFiles(allowMultiple: true);
     if (result == null) return;
     setState(() => _attachments.addAll(result.files.where((f) => f.path != null)));
   }
