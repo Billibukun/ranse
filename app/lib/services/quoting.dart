@@ -1,12 +1,14 @@
 import 'package:enough_mail/enough_mail.dart';
 import 'package:intl/intl.dart';
 
+import 'sender_resolve.dart';
+
 /// Gmail-style quoting for replies and forwards.
 class Quoting {
   Quoting._();
 
   static String _senderLabel(MimeMessage message) {
-    final from = message.decodeSender();
+    final from = message.resolvedSenders();
     if (from.isEmpty) return 'the sender';
     final first = from.first;
     final name = first.personalName;

@@ -78,6 +78,12 @@ class MailService {
     } else {
       selected = await client.selectMailbox(mailbox);
     }
+    // An empty folder must short-circuit: fetching zero messages sends an
+    // invalid message set that servers answer with BAD.
+    if (selected.messagesExists == 0) {
+      folderCache[selected.encodedPath] = [];
+      return [];
+    }
     final messages = await client.fetchMessages(
       count: count,
       fetchPreference: FetchPreference.envelope,

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../models/account.dart';
 import '../services/mail_service.dart';
+import '../services/sender_resolve.dart';
 import '../theme.dart';
 import '../widgets/message_row.dart';
 import 'message_screen.dart';
@@ -71,12 +72,9 @@ class _SearchScreenState extends State<SearchScreen> {
   List<(String, int)> get _people {
     final counts = <String, int>{};
     for (final m in _results ?? <MimeMessage>[]) {
-      final from = m.decodeSender();
-      if (from.isEmpty) continue;
-      final name = from.first.personalName?.trim().isNotEmpty ?? false
-          ? from.first.personalName!
-          : from.first.email;
-      counts[name] = (counts[name] ?? 0) + 1;
+      final label = m.senderLabel();
+      if (label == '(unknown sender)') continue;
+      counts[label] = (counts[label] ?? 0) + 1;
     }
     final list = counts.entries.map((e) => (e.key, e.value)).toList()
       ..sort((a, b) => b.$2.compareTo(a.$2));

@@ -4,6 +4,7 @@ import 'package:workmanager/workmanager.dart';
 import '../models/account.dart';
 import 'account_store.dart';
 import 'notifier.dart';
+import 'sender_resolve.dart';
 
 const String pollTaskName = 'ranse-poll-mail';
 const String pollUniqueName = 'ranse-periodic-poll';
@@ -89,11 +90,11 @@ Future<int> _pollAccount(RanseAccount account) async {
         ? fresh.sublist(fresh.length - _maxNotificationsPerPoll)
         : fresh;
     for (final message in toShow) {
-      final from = message.decodeSender();
-      final sender = from.isNotEmpty
-          ? (from.first.personalName?.isNotEmpty ?? false
-              ? from.first.personalName!
-              : from.first.email)
+      final senders = message.resolvedSenders();
+      final sender = senders.isNotEmpty
+          ? (senders.first.personalName?.isNotEmpty ?? false
+              ? senders.first.personalName!
+              : senders.first.email)
           : account.email;
       await Notifier.showNewMail(
         id: (message.uid ?? DateTime.now().millisecondsSinceEpoch) % 0x7FFFFFFF,

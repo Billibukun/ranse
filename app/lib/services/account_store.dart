@@ -79,6 +79,29 @@ class AccountStore extends ChangeNotifier {
     await clearLastSeenUid(id);
   }
 
+  /// The display name rides on every outgoing From header, so edits here
+  /// change what recipients see.
+  Future<void> updateDisplayName(String id, String name) async {
+    _accounts = _accounts.map((a) {
+      if (a.id != id) return a;
+      return RanseAccount(
+        id: a.id,
+        displayName: name.trim(),
+        email: a.email,
+        password: a.password,
+        imapHost: a.imapHost,
+        imapPort: a.imapPort,
+        imapUseSsl: a.imapUseSsl,
+        smtpHost: a.smtpHost,
+        smtpPort: a.smtpPort,
+        smtpUseSsl: a.smtpUseSsl,
+        loginName: a.loginName,
+      );
+    }).toList();
+    await _persist();
+    notifyListeners();
+  }
+
   Future<void> setCurrent(String? id) async {
     _currentId = id;
     final prefs = await SharedPreferences.getInstance();

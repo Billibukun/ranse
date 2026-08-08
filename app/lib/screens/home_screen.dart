@@ -287,7 +287,7 @@ class _HomeScreenState extends State<HomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '${_greeting()} · ${account.email}',
+                  '${_greeting()}, ${account.displayName.trim().isNotEmpty ? account.displayName.trim().split(' ').first : account.email}',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(

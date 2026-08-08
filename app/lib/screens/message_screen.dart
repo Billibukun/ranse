@@ -11,6 +11,7 @@ import 'package:path_provider/path_provider.dart';
 import '../models/account.dart';
 import '../services/mail_service.dart';
 import '../services/quoting.dart';
+import '../services/sender_resolve.dart';
 import '../theme.dart';
 import '../widgets/rich_composer.dart';
 import 'compose_screen.dart';
@@ -254,7 +255,7 @@ class _MessageScreenState extends State<MessageScreen> {
   Widget _messageBody(MimeMessage full) {
     final scheme = Theme.of(context).colorScheme;
     final ranse = context.ranse;
-    final from = full.decodeSender();
+    final from = full.resolvedSenders();
     final sender = from.isNotEmpty ? from.first : null;
     final date = full.decodeDate()?.toLocal();
     final attachments = full.findContentInfo();
@@ -589,7 +590,7 @@ class _MessageScreenState extends State<MessageScreen> {
   }
 
   String _replyToLabel() {
-    final from = _full?.decodeSender();
+    final from = _full?.resolvedSenders();
     if (from == null || from.isEmpty) return 'the sender';
     return from.first.email;
   }

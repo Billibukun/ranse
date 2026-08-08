@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@1,600;1,700&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; }
+  body { background:transparent; }
+  .tile { width:1024px; height:1024px; display:flex; align-items:center;
+          justify-content:center; position:relative; overflow:hidden; }
+
+  /* V1 - monogram, full bleed (legacy icon) */
+  .v1 { background:#175244; }
+  .v1 .r { font-family:"Fraunces",serif; font-style:italic; font-weight:600;
+           font-size:640px; color:#F7F4EE; line-height:1;
+           margin-top:-70px; margin-left:-40px; }
+  .v1 .dot { position:absolute; width:96px; height:96px; border-radius:50%;
+             background:#C2A05E; right:262px; bottom:270px; }
+
+  /* Foreground-only render for the adaptive icon: glyph at ~52% so it sits
+     inside the Android safe zone; transparent background. */
+  .fg { background:transparent; }
+  .fg .r { font-family:"Fraunces",serif; font-style:italic; font-weight:600;
+           font-size:430px; color:#F7F4EE; line-height:1;
+           margin-top:-46px; margin-left:-26px; }
+  .fg .dot { position:absolute; width:64px; height:64px; border-radius:50%;
+             background:#C2A05E; right:388px; bottom:396px; }
+
+  /* Monochrome (Android themed icons): white glyph only */
+  .mono .r { color:#FFFFFF; }
+  .mono .dot { background:#FFFFFF; }
+</style>
+</head>
+<body>
+<div class="tile" id="render"></div>
+<script>
+  const variant = new URLSearchParams(location.search).get('v') || 'v1';
+  const tile = document.getElementById('render');
+  if (variant === 'v1') {
+    tile.className = 'tile v1';
+    tile.innerHTML = '<span class="r">R</span><span class="dot"></span>';
+  } else if (variant === 'fg') {
+    tile.className = 'tile fg';
+    tile.innerHTML = '<span class="r">R</span><span class="dot"></span>';
+  } else if (variant === 'fgsolid') {
+    tile.className = 'tile fg';
+    tile.style.background = '#175244';
+    tile.innerHTML = '<span class="r">R</span><span class="dot"></span>';
+  } else if (variant === 'monobw') {
+    tile.className = 'tile fg mono';
+    tile.style.background = '#000000';
+    tile.innerHTML = '<span class="r">R</span><span class="dot"></span>';
+  } else if (variant === 'mono') {
+    tile.className = 'tile fg mono';
+    tile.innerHTML = '<span class="r">R</span><span class="dot"></span>';
+  }
+</script>
+</body>
+</html>

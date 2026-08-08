@@ -2,6 +2,7 @@ import 'package:enough_mail/enough_mail.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../services/sender_resolve.dart';
 import '../theme.dart';
 
 /// Dense message row: sender + time / subject / quiet flags.
@@ -25,21 +26,9 @@ class MessageRow extends StatelessWidget {
   final bool selected;
   final String? folderHint;
 
-  String _sender() {
-    final from = message.decodeSender();
-    if (from.isEmpty) return '(unknown sender)';
-    final first = from.first;
-    final name = first.personalName;
-    return (name != null && name.trim().isNotEmpty) ? name : first.email;
-  }
+  String _sender() => message.senderLabel();
 
-  String? _senderDomain() {
-    final from = message.decodeSender();
-    if (from.isEmpty) return null;
-    final email = from.first.email;
-    final at = email.lastIndexOf('@');
-    return at > 0 ? email.substring(at + 1) : null;
-  }
+  String? _senderDomain() => message.senderDomain();
 
   String _time() {
     final date = message.decodeDate();

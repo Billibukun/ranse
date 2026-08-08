@@ -107,6 +107,42 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
+  Future<void> _editName(String id, String email, String current) async {
+    final controller = TextEditingController(text: current);
+    final saved = await showDialog<String>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Name shown to recipients'),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          textCapitalization: TextCapitalization.words,
+          decoration: InputDecoration(
+            hintText: 'e.g. Adaeze Okafor',
+            helperText: email,
+            border:
+                OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () =>
+                Navigator.of(context).pop(controller.text.trim()),
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    );
+    controller.dispose();
+    if (saved != null) {
+      await AccountStore.instance.updateDisplayName(id, saved);
+    }
+  }
+
   Future<void> _confirmRemove(String id, String email) async {
     final confirmed = await showDialog<bool>(
       context: context,
@@ -198,11 +234,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               fontWeight: FontWeight.w600),
                         ),
                         subtitle: Text(
-                          account.imapHost,
+                          account.displayName.trim().isNotEmpty
+                              ? 'Sends as "${account.displayName}"'
+                              : 'No name set - tap to add one',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(fontSize: 11.5),
                         ),
+                        onTap: () => _editName(account.id,
+                            account.email, account.displayName),
                         trailing: IconButton(
                           icon: const Icon(Icons.delete_outline, size: 20),
                           onPressed: () =>
